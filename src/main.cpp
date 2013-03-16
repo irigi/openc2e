@@ -37,10 +37,24 @@
 #include <windows.h>
 #endif
 
+#include "TextWorld.h"
+
 // SDL tries stealing main on some platforms, which we don't want.
 #undef main
 
 extern "C" int main(int argc, char *argv[]) {
+
+	// trial and error by irigi
+
+	text_world();
+
+	return 0;
+
+
+	// end of trial and error by irigi
+
+
+
 	try {
 		std::string version;
 #ifdef DEV_BUILD

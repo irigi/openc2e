@@ -8,6 +8,9 @@ EXECUTE_PROCESS(COMMAND mkdir -p "${GEN}")
 SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS 1)
 SET(CMAKE_MODULE_PATH "${SRC}/cmake")
 
+SET(CURSES_LIBRARY /usr/lib/libcurses.so)
+SET(CURSES_INCLUDE_PATH /usr/include) 
+
 SET(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "The type of build to perform. Valid values are: RelWithDebInfo (default), Debug, Release, MinSizeRel")
 IF (CMAKE_BUILD_TYPE STREQUAL "")
 	SET(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "The type of build to perform. Valid values are: RelWithDebInfo (default), Debug, Release, MinSizeRel" FORCE)
@@ -126,6 +129,7 @@ SET(OPENC2E_CORE
 	src/World.cpp
 	src/main.cpp
 	src/util.cpp
+	src/TextWorld.cpp
 )
 
 SET(OPENC2E_SDL
@@ -267,6 +271,7 @@ TARGET_LINK_LIBRARIES(openc2e z m pthread
 	${OPENAL_LIBRARY}
 	${ALUT_LIBRARY}
 	${FRONTEND_LIBS}
+	${CURSES_LIBRARY}
 	boost_program_options-mt
 	boost_serialization-mt
 	boost_filesystem-mt
@@ -290,6 +295,7 @@ INCLUDE_DIRECTORIES(BEFORE
 	${OPENAL_INCLUDE_DIR}
 	${ALUT_INCLUDE_DIR}
 	${Boost_INCLUDE_DIR}
+	${CURSES_INCLUDE_PATH}
 	)
 
 FILE(GLOB CAOSVM_FILES ${SRC}/src/caos/caosVM_*.cpp)
