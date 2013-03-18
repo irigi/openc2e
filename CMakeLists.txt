@@ -39,7 +39,7 @@ ENDIF (OPENC2E_PROFILE_ALLOCATION)
 
 SET(OPENC2E_CORE
 	src/Agent.cpp
-#	src/AgentHelpers.cpp
+	src/AgentHelpers.cpp
 	src/AgentRef.cpp
 #	src/alloc_count.cpp
 	src/creatures/attFile.cpp

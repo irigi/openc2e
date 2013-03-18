@@ -18,7 +18,7 @@
  */
 
 
-#include "IrigiAgent.h"
+#include "Agent.h"
 #include "TextWorld.h"
 
 bool agentIsVisible(IrigiAgent *seeing, IrigiAgent *dest) {
