@@ -25,22 +25,22 @@
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
-class Agent;
+class IrigiAgent;
 
 class AgentRef {
-	friend class Agent;
+	friend class IrigiAgent;
 	
 protected:
-	boost::weak_ptr<Agent> ref;
+	boost::weak_ptr<IrigiAgent> ref;
 	void checkLife() const;
 
 public:
 	void dump() const;
 	
 	AgentRef() { }
-	AgentRef(boost::shared_ptr<Agent> a) { ref = a; }
-	AgentRef(boost::weak_ptr<Agent> a) { ref = a; }
-	AgentRef(Agent *a) { set(a); }
+	AgentRef(boost::shared_ptr<IrigiAgent> a) { ref = a; }
+	AgentRef(boost::weak_ptr<IrigiAgent> a) { ref = a; }
+	AgentRef(IrigiAgent *a) { set(a); }
 	AgentRef(const AgentRef &r) : ref(r.ref) {}
 
 	void clear() { ref.reset(); }
@@ -48,25 +48,25 @@ public:
 	~AgentRef() { clear(); };
 
 	AgentRef &operator=(const AgentRef &r) { ref = r.ref; return *this; }
-	Agent *operator=(Agent *a) { set(a); return a; }
-	Agent &operator*() const { checkLife(); return *ref.lock().get(); }
-	Agent *operator->() const { checkLife(); return ref.lock().get(); }
+	IrigiAgent *operator=(IrigiAgent *a) { set(a); return a; }
+	IrigiAgent &operator*() const { checkLife(); return *ref.lock().get(); }
+	IrigiAgent *operator->() const { checkLife(); return ref.lock().get(); }
 	bool operator!() const { return lock().get() == NULL; }
 	/* This next line breaks builds with MSVC, tossing errors about ambiguous operators.
 	operator bool() const { return ref; } */
-	operator Agent *() const { return ref.lock().get(); }
+	operator IrigiAgent *() const { return ref.lock().get(); }
 	bool operator==(const AgentRef &r) const { return lock() == r.lock(); }
-	bool operator==(const Agent *r) const { return r == lock().get(); }
+	bool operator==(const IrigiAgent *r) const { return r == lock().get(); }
 	bool operator!=(const AgentRef &r) const { return !(*this == r);}
-	bool operator!=(const Agent *r) const { return !(*this == r); }
+	bool operator!=(const IrigiAgent *r) const { return !(*this == r); }
 
-	void set(Agent *a);
+	void set(IrigiAgent *a);
 	void set(const AgentRef &r) { ref = r.ref; }
-	void set(const boost::shared_ptr<Agent> &r) { ref = r; }
-	void set(const boost::weak_ptr<Agent> &r) { ref = r; }
+	void set(const boost::shared_ptr<IrigiAgent> &r) { ref = r; }
+	void set(const boost::weak_ptr<IrigiAgent> &r) { ref = r; }
 
-	boost::shared_ptr<Agent> lock() const;
-	Agent *get() const { return lock().get(); }
+	boost::shared_ptr<IrigiAgent> lock() const;
+	IrigiAgent *get() const { return lock().get(); }
 };
 		
 

@@ -83,7 +83,7 @@ int SkeletalPartCount() {
 		return 14;
 }
 
-SkeletalCreature::SkeletalCreature(unsigned char _family) : Agent(_family, 0, 0, 0) {
+SkeletalCreature::SkeletalCreature(unsigned char _family) : IrigiAgent(_family, 0, 0, 0) {
 	facialexpression = 0;
 	pregnancy = 0;
 	eyesclosed = false;
@@ -627,7 +627,7 @@ void SkeletalCreature::setGaitGene(unsigned int gaitdrive) { // TODO: not sure i
 }
 
 void SkeletalCreature::tick() {
-	Agent::tick();
+	IrigiAgent::tick();
 
 	if (paused) return;
 	
@@ -675,7 +675,7 @@ void SkeletalCreature::physicsTick() {
 	if (engine.version > 1) {
 		if (falling) {
 			if (engine.version == 2 || validInRoomSystem()) {
-				Agent::physicsTick();
+				IrigiAgent::physicsTick();
 			}
 		}
 	}
@@ -713,7 +713,7 @@ CompoundPart *SkeletalCreature::part(unsigned int id) {
 }
 
 void SkeletalCreature::setZOrder(unsigned int plane) {
-	Agent::setZOrder(plane);
+	IrigiAgent::setZOrder(plane);
 	skeleton->zapZOrder();
 	skeleton->addZOrder();
 }
@@ -740,7 +740,7 @@ void SkeletonPart::partRender(class Surface *renderer, int xoffset, int yoffset)
 }
 
 void SkeletalCreature::finishInit() {
-	Agent::finishInit();
+	IrigiAgent::finishInit();
 
 	processGenes();
 	skeletonInit();

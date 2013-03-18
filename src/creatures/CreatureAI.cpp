@@ -20,7 +20,7 @@
 #include "oldCreature.h"
 #include "c2eCreature.h"
 #include "CreatureAgent.h"
-#include "World.h"
+#include "TextWorld.h"
 #include "c2eBrain.h"
 #include "oldBrain.h"
 
@@ -130,13 +130,11 @@ void c2eCreature::tickBrain() {
 			AgentRef a = chosenagents[i];
 			if (!a) continue;
 
-			// TODO: use eye position? see Creature::agentInSight
-			float ourxpos = parentagent->x + (parentagent->getWidth() / 2.0f);
-			float theirxpos = a->x + (a->getWidth() / 2.0f);
-			float distance = theirxpos - ourxpos;
+			// XXX
+			float distance = parentagent->distance(a);
 
 			// TODO: squash result into appropriate range?
-			visnlobe->setNeuronInput(i, distance / parentagent->range.getFloat());
+			visnlobe->setNeuronInput(i, distance);
 		}
 	}
 
@@ -340,15 +338,15 @@ void Creature::chooseAgents() {
 
 	std::vector<std::vector<AgentRef> > possibles(chosenagents.size());
 
-	for (std::list<boost::shared_ptr<Agent> >::iterator i = world.agents.begin(); i != world.agents.end(); i++) {
-		boost::shared_ptr<Agent> a = *i;
+	for (std::list<boost::shared_ptr<IrigiAgent> >::iterator i = textworld.agents.begin(); i != textworld.agents.end(); i++) {
+		boost::shared_ptr<IrigiAgent> a = *i;
 		if (!a) continue;
 
-		// if agent category is -1 or outside of our #categories, continue
+		// if IrigiAgent category is -1 or outside of our #categories, continue
 		if (a->category < 0) continue;
 		if (a->category >= (int)chosenagents.size()) continue;
 
-		// if we already chose an agent from this category, continue
+		// if we already chose an IrigiAgent from this category, continue
 		if (chosenagents[a->category]) continue;
 
 		if (!agentInSight(a)) continue;

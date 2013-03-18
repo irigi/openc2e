@@ -58,7 +58,7 @@ CompoundPart *CompoundAgent::part(unsigned int id) {
 
 CompoundAgent::CompoundAgent(unsigned char _family, unsigned char _genus, unsigned short _species, unsigned int plane,
 				std::string spritefile, unsigned int firstimage, unsigned int imagecount) :
-				Agent(_family, _genus, _species, plane) {
+				IrigiAgent(_family, _genus, _species, plane) {
 	// TODO: we ignore image count acos it sucks
 	CompoundPart *p = new DullPart(this, 0, spritefile, firstimage, 0, 0, 0);
 	caos_assert(p);
@@ -71,7 +71,7 @@ CompoundAgent::CompoundAgent(unsigned char _family, unsigned char _genus, unsign
 	}
 }
 
-CompoundAgent::CompoundAgent(std::string _spritefile, unsigned int _firstimage, unsigned int _imagecount) : Agent(0, 0, 0, 0) {
+CompoundAgent::CompoundAgent(std::string _spritefile, unsigned int _firstimage, unsigned int _imagecount) : IrigiAgent(0, 0, 0, 0) {
 	// TODO: think about plane
 
 	spritefile = _spritefile;
@@ -92,7 +92,7 @@ CompoundAgent::~CompoundAgent() {
 }
 
 void CompoundAgent::setZOrder(unsigned int plane) {
-	Agent::setZOrder(plane);
+	IrigiAgent::setZOrder(plane);
 	for (std::vector<CompoundPart *>::iterator x = parts.begin(); x != parts.end(); x++) (*x)->zapZOrder();
 	for (std::vector<CompoundPart *>::iterator x = parts.begin(); x != parts.end(); x++) (*x)->addZOrder();
 }
@@ -104,14 +104,14 @@ void CompoundAgent::tick() {
 		}
 	}
 	
-	Agent::tick();
+	IrigiAgent::tick();
 }
 
 int CompoundAgent::handleClick(float clickx, float clicky) {
 	if (!activateable()) return -1;
 	
 	if (engine.version > 2) {
-		return Agent::handleClick(clickx, clicky);
+		return IrigiAgent::handleClick(clickx, clicky);
 	}
 
 	// the hotspots are relative to us
@@ -147,11 +147,11 @@ int CompoundAgent::handleClick(float clickx, float clicky) {
 	return -1;
 }
 
-bool CompoundAgent::fireScript(unsigned short event, Agent *from, caosVar one, caosVar two) {
+bool CompoundAgent::fireScript(unsigned short event, IrigiAgent *from, caosVar one, caosVar two) {
 	// TODO: this is a hack to deal with ACTV on compound agents in c1/c2
 	if (engine.version < 3 && actv.getInt() == event) return false;
 
-	return Agent::fireScript(event, from, one, two);
+	return IrigiAgent::fireScript(event, from, one, two);
 }
 
 void CompoundAgent::setHotspotLoc(unsigned int id, int l, int t, int r, int b) {

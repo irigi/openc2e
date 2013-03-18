@@ -20,7 +20,7 @@
 #include "CreatureAgent.h"
 #include "Creature.h"
 #include "Catalogue.h"
-#include "Engine.h"
+//#include "Engine.h"
 
 CreatureAgent::CreatureAgent() {
 	creature = 0;
@@ -46,7 +46,8 @@ void CreatureAgent::setCreature(Creature *c) {
 	getAgent()->setClassifier(getAgent()->family, getAgent()->genus, species);
 
 	// TODO: this should be in a seperate function
-	if (engine.version < 3) {
+
+	//if (engine.version < 3) {
 		switch (getAgent()->genus) {
 			case 1:
 				if (creature->isFemale())
@@ -61,7 +62,7 @@ void CreatureAgent::setCreature(Creature *c) {
 				getAgent()->setVoice("ettin");
 				break;
 		}
-	} else {
+	/*} else {
 		std::string tagname;
 		switch (getAgent()->genus) {
 			case 1: tagname = "Norn"; break;
@@ -78,7 +79,7 @@ void CreatureAgent::setCreature(Creature *c) {
 		tagname += " Embryo";
 		if (catalogue.hasTag(tagname))
 			getAgent()->setVoice(tagname);
-	}
+	}*/
 }
 
 void CreatureAgent::tick() {

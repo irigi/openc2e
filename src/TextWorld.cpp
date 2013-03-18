@@ -18,6 +18,7 @@
 #include <ctype.h>
 
 
+
 bool curses_started = false;
 
 void text_world() {
@@ -175,3 +176,6 @@ char * textWindow::intprtkey(int ch) {
 
     return NULL;        /*  We shouldn't get here  */
 }
+
+
+const std::string textWorld::gametype = "c3";

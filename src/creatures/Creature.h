@@ -25,7 +25,7 @@
 
 #include <deque>
 
-class Agent;
+class IrigiAgent;
 class CreatureAgent;
 class Creature;
 
@@ -36,7 +36,7 @@ namespace boost {
 class Creature {
 protected:
 	CreatureAgent *parent;
-	Agent *parentagent;
+	IrigiAgent *parentagent;
 	boost::shared_ptr<genomeFile> genome;
 	
 	// non-specific bits

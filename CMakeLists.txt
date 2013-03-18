@@ -26,9 +26,9 @@ ENDIF (OPENC2E_USE_OPENAL MATCHES "^(YES|NO|AUTO)$")
 SET(OPENC2E_USE_SERIALIZATION "FALSE" CACHE BOOL "Build the experimental serialization code")
 MARK_AS_ADVANCED(FORCE OPENC2E_USE_SERIALIZATION)
 IF (OPENC2E_USE_SERIALIZATION)
-	SET(SER_SRCS src/caos/caosVM_ser_real.cpp)
+#	SET(SER_SRCS src/caos/caosVM_ser_real.cpp)
 ELSE (OPENC2E_USE_SERIALIZATION)
-	SET(SER_SRCS src/caos/caosVM_ser_stub.cpp)
+#	SET(SER_SRCS src/caos/caosVM_ser_stub.cpp)
 ENDIF (OPENC2E_USE_SERIALIZATION)
 
 SET(OPENC2E_PROFILE_ALLOCATION "FALSE" CACHE BOOL "Collect allocation profile stats for DBG: SIZO")
@@ -39,131 +39,134 @@ ENDIF (OPENC2E_PROFILE_ALLOCATION)
 
 SET(OPENC2E_CORE
 	src/Agent.cpp
-	src/AgentHelpers.cpp
-	src/AgentRef.cpp
-	src/alloc_count.cpp
+#	src/AgentHelpers.cpp
+#	src/AgentRef.cpp
+#	src/alloc_count.cpp
 	src/creatures/attFile.cpp
-	src/Backend.cpp
+#	src/Backend.cpp
 	src/creatures/Biochemistry.cpp
-	src/Blackboard.cpp
-	src/images/blkImage.cpp
-	src/images/bmpImage.cpp
-	src/Bubble.cpp
-	src/bytecode.cpp
-	src/images/c16Image.cpp
+#	src/Blackboard.cpp
+#	src/images/blkImage.cpp
+#	src/images/bmpImage.cpp
+#	src/Bubble.cpp
+#	src/bytecode.cpp
+#	src/images/c16Image.cpp
 	src/creatures/c2eBrain.cpp
-	src/CallButton.cpp
-	src/Camera.cpp
-	src/caosScript.cpp
-	src/caosVar.cpp
-	src/caos/caosVM_agent.cpp
-	src/caos/caosVM_camera.cpp
-	src/caos/caosVM_compound.cpp
-	src/caos/caosVM_core.cpp
-	src/caos/caosVM_creatures.cpp
-	src/caos/caosVM_debug.cpp
-	src/caos/caosVM_files.cpp
-	src/caos/caosVM_flow.cpp
-	src/caos/caosVM_genetics.cpp
-	src/caos/caosVM_history.cpp
-	src/caos/caosVM_input.cpp
-	src/caos/caosVM_map.cpp
-	src/caos/caosVM_motion.cpp
-	src/caos/caosVM_net.cpp
-	src/caosVM.cpp
-	src/caos/caosVM_ports.cpp
-	src/caos/caosVM_resources.cpp
-	src/caos/caosVM_scripts.cpp
-	src/caos/caosVM_sounds.cpp
-	src/caos/caosVM_time.cpp
-	src/caos/caosVM_variables.cpp
-	src/caos/caosVM_vectors.cpp
-	src/caos/caosVM_vehicles.cpp
-	src/caos/caosVM_world.cpp
-	${GEN}/cataloglexer.cpp
-	src/Catalogue.cpp
-	${GEN}/catalogue.tab.cpp
-	${GEN}/cmddata.cpp
-	src/cobFile.cpp
-	src/CompoundAgent.cpp
-	src/creatures/CompoundCreature.cpp
-	src/CompoundPart.cpp
+#	src/CallButton.cpp
+#	src/Camera.cpp
+#	src/caosScript.cpp
+#	src/caosVar.cpp
+#	src/caos/caosVM_agent.cpp
+#	src/caos/caosVM_camera.cpp
+#	src/caos/caosVM_compound.cpp
+#	src/caos/caosVM_core.cpp
+#	src/caos/caosVM_creatures.cpp
+#	src/caos/caosVM_debug.cpp
+#	src/caos/caosVM_files.cpp
+#	src/caos/caosVM_flow.cpp
+#	src/caos/caosVM_genetics.cpp
+#	src/caos/caosVM_history.cpp
+#	src/caos/caosVM_input.cpp
+#	src/caos/caosVM_map.cpp
+#	src/caos/caosVM_motion.cpp
+#	src/caos/caosVM_net.cpp
+#	src/caosVM.cpp
+#	src/caos/caosVM_ports.cpp
+#	src/caos/caosVM_resources.cpp
+#	src/caos/caosVM_scripts.cpp
+#	src/caos/caosVM_sounds.cpp
+#	src/caos/caosVM_time.cpp
+#	src/caos/caosVM_variables.cpp
+#	src/caos/caosVM_vectors.cpp
+#	src/caos/caosVM_vehicles.cpp
+#	src/caos/caosVM_world.cpp
+#	${GEN}/cataloglexer.cpp
+#	src/Catalogue.cpp
+#	${GEN}/catalogue.tab.cpp
+#	${GEN}/cmddata.cpp
+#	src/cobFile.cpp
+#	src/CompoundAgent.cpp
+#	src/creatures/CompoundCreature.cpp
+#	src/CompoundPart.cpp
 	src/creatures/Creature.cpp
 	src/creatures/CreatureAgent.cpp
 	src/creatures/CreatureAI.cpp
 	src/creaturesImage.cpp
-	src/dialect.cpp
-	src/Engine.cpp
-	src/exceptions.cpp
-	src/fileSwapper.cpp
+#	src/dialect.cpp
+#	src/Engine.cpp
+#	src/exceptions.cpp
+#	src/fileSwapper.cpp
 	src/creatures/genomeFile.cpp
-	src/historyManager.cpp
-	src/imageManager.cpp
-	${GEN}/mnglexer.cpp
-	${GEN}/caoslexer.cpp
-	src/Lift.cpp
-	src/Map.cpp
-	src/MetaRoom.cpp
-	src/mmapifstream.cpp
-	src/music/mngfile.cpp
-	${GEN}/mngparser.tab.cpp
-	src/MusicManager.cpp
+#	src/historyManager.cpp
+#	src/imageManager.cpp
+#	${GEN}/mnglexer.cpp
+#	${GEN}/caoslexer.cpp
+#	src/Lift.cpp
+#	src/Map.cpp
+#	src/MetaRoom.cpp
+#	src/mmapifstream.cpp
+#	src/music/mngfile.cpp
+#	${GEN}/mngparser.tab.cpp
+#	src/MusicManager.cpp
 	src/creatures/oldBrain.cpp
-	src/PathResolver.cpp
-	src/peFile.cpp
-	src/physics.cpp
-	src/PointerAgent.cpp
-	src/Port.cpp
-	src/pray.cpp
-	src/prayManager.cpp
-	src/renderable.cpp
-	src/Room.cpp
-	src/Scriptorium.cpp
-	src/SFCFile.cpp
-	src/SimpleAgent.cpp
-	src/creatures/SkeletalCreature.cpp
-	src/images/sprImage.cpp
-	src/streamutils.cpp
-	src/Vehicle.cpp
-	src/VoiceData.cpp
-	src/World.cpp
+#	src/PathResolver.cpp
+#	src/peFile.cpp
+#	src/physics.cpp
+#	src/PointerAgent.cpp
+#	src/Port.cpp
+#	src/pray.cpp
+#	src/prayManager.cpp
+#	src/renderable.cpp
+#	src/Room.cpp
+#	src/Scriptorium.cpp
+#	src/SFCFile.cpp
+#	src/SimpleAgent.cpp
+#	src/creatures/SkeletalCreature.cpp
+#	src/images/sprImage.cpp
+#	src/streamutils.cpp
+#	src/Vehicle.cpp
+#	src/VoiceData.cpp
+#	src/World.cpp
 	src/main.cpp
 	src/util.cpp
 	src/TextWorld.cpp
 )
 
 SET(OPENC2E_SDL
-	src/backends/SDLBackend.cpp
+#	src/backends/SDLBackend.cpp
 )
 
 SET(OPENC2E_QT
-	src/backends/qtgui/qtopenc2e.cpp
-	src/backends/qtgui/openc2eview.cpp
-	src/backends/qtgui/AgentInjector.cpp
-	src/backends/qtgui/BrainViewer.cpp
-	src/backends/qtgui/imagepreview.cpp
-	src/backends/qtgui/c1cobfile.cpp
-	src/backends/qtgui/QtBackend.cpp
-	src/backends/qtgui/GraphWidget.cpp
-	src/backends/qtgui/CreatureGrapher.cpp
-	src/backends/qtgui/ChemicalSelector.cpp
-	src/backends/qtgui/Hatchery.cpp
-	src/tools/braininavat/brainview.cpp)
+#	src/backends/qtgui/qtopenc2e.cpp
+#	src/backends/qtgui/openc2eview.cpp
+#	src/backends/qtgui/AgentInjector.cpp
+#	src/backends/qtgui/BrainViewer.cpp
+#	src/backends/qtgui/imagepreview.cpp
+#	src/backends/qtgui/c1cobfile.cpp
+#	src/backends/qtgui/QtBackend.cpp
+#	src/backends/qtgui/GraphWidget.cpp
+#	src/backends/qtgui/CreatureGrapher.cpp
+#	src/backends/qtgui/ChemicalSelector.cpp
+#	src/backends/qtgui/Hatchery.cpp
+#	src/tools/braininavat/brainview.cpp
+)
 
 SET(OPENC2E_QT_MOC_HDRS
-	src/backends/qtgui/qtopenc2e.h
-	src/backends/qtgui/openc2eview.h
-	src/backends/qtgui/AgentInjector.h
-	src/backends/qtgui/BrainViewer.h
-	src/backends/qtgui/imagepreview.h
-	src/backends/qtgui/GraphWidget.h
-	src/backends/qtgui/CreatureGrapher.h
-	src/backends/qtgui/ChemicalSelector.h
-	src/backends/qtgui/Hatchery.h
-	src/tools/braininavat/brainview.h)
+#	src/backends/qtgui/qtopenc2e.h
+#	src/backends/qtgui/openc2eview.h
+#	src/backends/qtgui/AgentInjector.h
+#	src/backends/qtgui/BrainViewer.h
+#	src/backends/qtgui/imagepreview.h
+#	src/backends/qtgui/GraphWidget.h
+#	src/backends/qtgui/CreatureGrapher.h
+#	src/backends/qtgui/ChemicalSelector.h
+#	src/backends/qtgui/Hatchery.h
+#	src/tools/braininavat/brainview.h
+)
 
 SET(OPENC2E_QT_UIS
-	src/backends/qtgui/agents.ui)
+#	src/backends/qtgui/agents.ui
+)
 # 
 
 
@@ -226,13 +229,13 @@ IF(USE_OPENAL STREQUAL "NO")
     SET(OPENAL_SRC "")
     SET(OPENAL_DEF "")
 ELSE(USE_OPENAL STREQUAL "NO")
-    SET(OPENAL_SRC "src/backends/OpenALBackend.cpp")
-    SET(OPENAL_DEF "-DOPENAL_SUPPORT")
+#    SET(OPENAL_SRC "src/backends/OpenALBackend.cpp")
+#    SET(OPENAL_DEF "-DOPENAL_SUPPORT")
 ENDIF(USE_OPENAL STREQUAL "NO")
 
 IF(SDLMIXER_FOUND)
-    SET(SDLMIXER_SRC "src/backends/SDLMixerBackend.cpp")
-    SET(SDLMIXER_DEF "-DSDLMIXER_SUPPORT")
+#    SET(SDLMIXER_SRC "src/backends/SDLMixerBackend.cpp")
+#    SET(SDLMIXER_DEF "-DSDLMIXER_SUPPORT")
 ELSE(SDLMIXER_FOUND)
     SET(SDLMIXER_INCLUDE_DIR "")
     SET(SDLMIXER_LIBRARY "")

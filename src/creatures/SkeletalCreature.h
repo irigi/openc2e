@@ -26,7 +26,7 @@
 
 class creaturesImage;
 
-class SkeletalCreature : public Agent, public CreatureAgent {
+class SkeletalCreature : public IrigiAgent, public CreatureAgent {
 protected:
 	class SkeletonPart *skeleton;
 
@@ -71,7 +71,7 @@ protected:
 	creatureAppearanceGene *appearanceGeneForPart(char p);
 	shared_ptr<creaturesImage> tintBodySprite(shared_ptr<creaturesImage>);
 
-	Agent *getAgent() { return this; }
+	IrigiAgent *getAgent() { return this; }
 
 public:
 	SkeletalCreature(unsigned char _family);

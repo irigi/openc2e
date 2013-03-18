@@ -22,21 +22,17 @@
 
 #include <vector>
 
-class Agent;
+class IrigiAgent;
 class AgentRef;
-class MetaRoom;
-class Room;
 
 namespace boost {
 	template <typename T> class shared_ptr;
 }
 
-bool agentIsVisible(Agent *seeing, Agent *a, float ownerx, float ownery, MetaRoom *ownermeta, boost::shared_ptr<Room> ownerroom);
-bool agentIsVisible(Agent *seeing, Agent *dest);
-std::vector<boost::shared_ptr<Agent> > getVisibleList(Agent *seeing, unsigned char family, unsigned char genus, unsigned short species);
+bool agentIsVisible(IrigiAgent *seeing, IrigiAgent *dest);
+std::vector<boost::shared_ptr<IrigiAgent> > getVisibleList(IrigiAgent *seeing, unsigned char family, unsigned char genus, unsigned short species);
 
-bool agentsTouching(Agent *first, Agent *second);
-boost::shared_ptr<Room> roomContainingAgent(AgentRef agent);
+bool agentsTouching(IrigiAgent *first, IrigiAgent *second);
 
 #endif
 
