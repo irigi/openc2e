@@ -36,7 +36,7 @@ struct HotspotFunction {
 	uint8 mask;
 };
 
-class CompoundAgent : public Agent {
+class CompoundAgent : public IrigiAgent {
 protected:
 	std::vector<CompoundPart *> parts;
 	

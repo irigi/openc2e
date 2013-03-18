@@ -23,14 +23,11 @@
 #include "AgentRef.h"
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
-#include "caosVar.h"
-#include "CompoundPart.h"
 #include <list>
 #include <map>
 #include "openc2e.h"
-#include "Port.h"
-#include "physics.h"
 #include <set>
+#include <math.h>
 
 class script;
 class genomeFile;
@@ -39,6 +36,61 @@ struct agentzorder {
 	bool operator()(const class Agent *s1, const class Agent *s2) const;
 };
 
+class IrigiAgent : public boost::enable_shared_from_this<IrigiAgent> {
+	friend class CreatureAgent;
+	friend class AgentRef;
+public:
+	int x, y, z;
+
+	bool queueScript(unsigned short event, AgentRef from = AgentRef()/*, caosVar p0 = caosVar(), caosVar p1 = caosVar()*/);
+	void stopScript();
+	void setVoice(std::string name);
+
+	// attr
+	unsigned int attr;
+	bool carryable() { return attr & 1; }
+	bool mouseable() { return attr & 2; }
+	bool activateable() { return attr & 4; }
+	bool greedycabin() { return attr & 8; }
+	bool invisible() { return attr & 16; }
+	bool floatable() { return attr & 32; }
+
+	inline bool isDying() const {
+		return dying;
+	}
+
+	unsigned char family, genus;
+	unsigned short species;
+
+	AgentRef carrying;
+	AgentRef carriedby;
+	AgentRef invehicle;
+
+	int category;
+
+	bool vmStopped();
+
+	double distance(IrigiAgent *a);
+
+	void setClassifier(unsigned char f, unsigned char g, unsigned short s);
+protected:
+	std::map<unsigned int, boost::shared_ptr<genomeFile> > genome_slots;
+	bool dying : 1;
+
+	// to be polymorphic with CreatureAgent?
+	//virtual bool fireScript(unsigned short event, Agent *from, caosVar one, caosVar two);
+
+	virtual void physicsTick();
+	//void physicsTickC2();
+
+	virtual void carry(AgentRef);
+	virtual void drop(AgentRef);
+
+	virtual std::pair<int, int> getCarryPoint();
+	virtual std::pair<int, int> getCarriedPoint();
+	virtual void adjustCarried(float xoffset, float yoffset);
+};
+/*
 class Agent : public boost::enable_shared_from_this<Agent> {
 	
 	friend struct agentzorder;
@@ -304,7 +356,7 @@ class LifeAssert {
 			p->lifecount--;
 		}
 };
-
+*/
 
 #endif
 /* vim: set noet: */

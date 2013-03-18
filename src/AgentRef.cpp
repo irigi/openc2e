@@ -26,7 +26,7 @@ void AgentRef::checkLife() const {
 	assert(ref.expired() || !(ref.lock()->isDying()));
 }
 
-void AgentRef::set(Agent *a) {
+void AgentRef::set(IrigiAgent *a) {
 	if (a && !a->isDying())
 		set(a->shared_from_this());
 	else
@@ -37,8 +37,8 @@ void AgentRef::dump() const {
 	std::cerr << "AgentRef " << (void *)this << " pointing to " << (void *)ref.lock().get() << std::endl;
 }
 
-boost::shared_ptr<Agent> AgentRef::lock() const {
-	boost::shared_ptr<Agent> p = ref.lock();
+boost::shared_ptr<IrigiAgent> AgentRef::lock() const {
+	boost::shared_ptr<IrigiAgent> p = ref.lock();
 	if (p && p->isDying())
 		p.reset();
 	return p;

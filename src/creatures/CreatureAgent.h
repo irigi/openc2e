@@ -38,7 +38,7 @@ protected:
 	virtual void creatureAged() { }
 	virtual void creatureDied() { }
 	
-	virtual Agent *getAgent() = 0;
+	virtual IrigiAgent *getAgent() = 0;
 
 public:
 	CreatureAgent();

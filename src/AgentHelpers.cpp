@@ -17,61 +17,22 @@
  *
  */
 
-#include "World.h"
+
 #include "Agent.h"
-#include "MetaRoom.h"
-#include "Room.h"
+#include "TextWorld.h"
 
-bool agentIsVisible(Agent *seeing, Agent *a, float ownerx, float ownery, MetaRoom *ownermeta, shared_ptr<Room> ownerroom) {
-	assert(ownermeta && ownerroom);
+bool agentIsVisible(IrigiAgent *seeing, IrigiAgent *dest) {
+	// TODO: To be replaced by proper check if there is free path between them.
+	return pow(seeing->x-dest->x, 2) + pow(seeing->y-dest->y, 2) + pow(seeing->z-dest->z, 2) <= 25;
 
-	if (seeing == a) return false;
-
-	// verify we're in the same metaroom as owner, and in a room
-	float thisx = a->x + (a->getWidth() / 2.0f);
-	float thisy = a->y + (a->getHeight() / 2.0f);
-	MetaRoom *m = world.map.metaRoomAt(thisx, thisy);
-	if (m != ownermeta) return false;
-	shared_ptr<Room> r = world.map.roomAt(thisx, thisy);
-	if (!r) return false;
-		
-	// compare squared distance with range
-	double deltax = thisx - ownerx; deltax *= deltax;
-	double deltay = thisy - ownery; deltay *= deltay;
-	if ((deltax + deltay) > (seeing->range.getFloat() * seeing->range.getFloat())) return false;
-
-	// do the actual visibiltiy check using a line between centers
-	Point src(ownerx, ownery), dest(thisx, thisy);
-	Line dummywall; unsigned int dummydir;
-	shared_ptr<Room> newroom = ownerroom;
-	world.map.collideLineWithRoomSystem(src, dest, newroom, src, dummywall, dummydir, seeing->perm);
-	if (src != dest) return false;
-
-	return true;
 }
 
-bool agentIsVisible(Agent *seeing, Agent *dest) {
-	float ownerx = (seeing->x + (seeing->getWidth() / 2.0f));
-	float ownery = (seeing->y + (seeing->getHeight() / 2.0f));
-	MetaRoom *ownermeta = world.map.metaRoomAt(ownerx, ownery);
-	shared_ptr<Room> ownerroom = world.map.roomAt(ownerx, ownery);
-	if (!ownermeta) return false; if (!ownerroom) return false;
+std::vector<boost::shared_ptr<IrigiAgent> > getVisibleList(IrigiAgent *seeing, unsigned char family, unsigned char genus, unsigned short species) {
+	std::vector<boost::shared_ptr<IrigiAgent> > agents;
 
-	return agentIsVisible(seeing, dest, ownerx, ownery, ownermeta, ownerroom);
-}
-
-std::vector<boost::shared_ptr<Agent> > getVisibleList(Agent *seeing, unsigned char family, unsigned char genus, unsigned short species) {
-	std::vector<boost::shared_ptr<Agent> > agents;
-
-	float ownerx = (seeing->x + (seeing->getWidth() / 2.0f));
-	float ownery = (seeing->y + (seeing->getHeight() / 2.0f));
-	MetaRoom *ownermeta = world.map.metaRoomAt(ownerx, ownery);
-	shared_ptr<Room> ownerroom = world.map.roomAt(ownerx, ownery);
-	if (!ownermeta) return agents; if (!ownerroom) return agents;
-	
-	for (std::list<boost::shared_ptr<Agent> >::iterator i
-			= world.agents.begin(); i != world.agents.end(); i++) {
-		boost::shared_ptr<Agent> a = (*i);
+	for (std::list<boost::shared_ptr<IrigiAgent> >::iterator i
+			= textworld.agents.begin(); i != textworld.agents.end(); i++) {
+		boost::shared_ptr<IrigiAgent> a = (*i);
 		if (!a) continue;
 		
 		// TODO: if owner is a creature, skip stuff with invisible attribute
@@ -81,43 +42,16 @@ std::vector<boost::shared_ptr<Agent> > getVisibleList(Agent *seeing, unsigned ch
 		if (genus && genus != a->genus) continue;
 		if (family && family != a->family) continue;
 
-		if (agentIsVisible(seeing, a.get(), ownerx, ownery, ownermeta, ownerroom))	
+		if (agentIsVisible(seeing, a.get()))
 			agents.push_back(a);
 	}
 
 	return agents;
 }
 
-bool agentsTouching(Agent *first, Agent *second) {
+bool agentsTouching(IrigiAgent *first, IrigiAgent *second) {
 	assert(first && second);
 
-	// TODO: c2e docs say it only checks if bounding lines overlap, implement it like that?
-	
-	// this check should probably be integrated into line overlap check?
-	if (first == second) return false;
-
-	if (first->x < second->x) {
-		if ((first->x + first->getWidth()) < second->x)
-			return false;
-	} else {
-		if ((second->x + second->getWidth()) < first->x)
-			return false;
-	}
-
-	if (first->y < second->y) {
-		if ((first->y + first->getHeight()) < second->y)
-			return false;
-	} else {
-		if ((second->y + second->getHeight()) < first->y)
-			return false;
-	}
-
-	return true;
-}
-
-shared_ptr<Room> roomContainingAgent(AgentRef agent) {
-	MetaRoom *m = world.map.metaRoomAt(agent->x, agent->y);
-	if (!m) return shared_ptr<Room>();
-	return m->roomAt(agent->x + (agent->getWidth() / 2.0f), agent->y + (agent->getHeight() / 2.0f));
+	return (first->x == second->x) && (first->y == second->y) && (first->z == second->z);
 }
 

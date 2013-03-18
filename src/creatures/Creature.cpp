@@ -21,7 +21,7 @@
 #include "oldCreature.h"
 #include "c2eCreature.h"
 #include "CreatureAgent.h"
-#include "World.h"
+//#include "World.h"
 #include "Catalogue.h"
 #include "c2eBrain.h"
 #include "oldBrain.h"
@@ -37,7 +37,7 @@ Creature::Creature(shared_ptr<genomeFile> g, bool is_female, unsigned char _vari
 
 	parent = a;
 	assert(parent);
-	parentagent = dynamic_cast<Agent *>(parent);
+	parentagent = dynamic_cast<IrigiAgent *>(parent);
 	assert(parentagent);
 	
 	alive = true; // ?
@@ -139,7 +139,7 @@ void Creature::ageCreature() {
 	assert(parent);
 	parent->creatureAged();
 #ifndef _CREATURE_STANDALONE	
-	world.history.getMoniker(world.history.findMoniker(genome)).addEvent(4, "", ""); // aged event
+	// XXX world.history.getMoniker(world.history.findMoniker(genome)).addEvent(4, "", ""); // aged event
 #endif
 }
 
@@ -161,8 +161,8 @@ void Creature::born() {
 
 	// TODO: life event?
 #ifndef _CREATURE_STANDALONE
-	world.history.getMoniker(world.history.findMoniker(genome)).wasBorn();
-	world.history.getMoniker(world.history.findMoniker(genome)).addEvent(3, "", ""); // born event, parents..
+	// XXX world.history.getMoniker(world.history.findMoniker(genome)).wasBorn();
+	// XXX world.history.getMoniker(world.history.findMoniker(genome)).addEvent(3, "", ""); // born event, parents..
 #endif
 
 	tickage = true;
@@ -173,8 +173,8 @@ void Creature::die() {
 
 	// TODO: life event?
 #ifndef _CREATURE_STANDALONE
-	world.history.getMoniker(world.history.findMoniker(genome)).hasDied();
-	world.history.getMoniker(world.history.findMoniker(genome)).addEvent(7, "", ""); // died event
+	// XXX world.history.getMoniker(world.history.findMoniker(genome)).hasDied();
+	// XXX world.history.getMoniker(world.history.findMoniker(genome)).addEvent(7, "", ""); // died event
 #endif
 	// TODO: disable brain/biochemistry updates
 	

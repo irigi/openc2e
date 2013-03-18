@@ -18,20 +18,71 @@
  */
 
 #include "Agent.h"
-#include "MetaRoom.h"
-#include "World.h"
-#include "Engine.h"
+//#include "Engine.h"
 #include <iostream>
-#include "caosVM.h"
-#include "AudioBackend.h"
+//#include "caosVM.h"
+//#include "AudioBackend.h"
 #include <boost/format.hpp>
-#include "Room.h"
-#include "Vehicle.h"
 #include "AgentHelpers.h"
-#include "creaturesImage.h"
-#include "Camera.h"
-#include "VoiceData.h"
+#include "TextWorld.h"
+//#include "creaturesImage.h"
+//#include "Camera.h"
+//#include "VoiceData.h"
 
+double IrigiAgent::distance(IrigiAgent *a) {
+	return sqrt(pow(x - a->x, 2) + pow(y - a->y, 2) + pow(z - a->z, 2) );
+};
+
+bool IrigiAgent::queueScript(unsigned short event, AgentRef from) {
+	return false;
+}
+
+void IrigiAgent::stopScript() {
+
+}
+
+void IrigiAgent::setVoice(std::string name) {
+
+}
+
+bool IrigiAgent::vmStopped() {
+	return false;
+}
+
+void IrigiAgent::setClassifier(unsigned char f, unsigned char g, unsigned short s) {
+
+}
+
+
+
+
+
+// the virtual beasts
+void IrigiAgent::physicsTick() {
+
+}
+
+void IrigiAgent::carry(AgentRef) {
+
+}
+
+void IrigiAgent::drop(AgentRef) {
+
+}
+
+std::pair<int, int> IrigiAgent::getCarryPoint() {
+
+}
+
+std::pair<int, int> IrigiAgent::getCarriedPoint() {
+
+}
+
+void IrigiAgent::adjustCarried(float xoffset, float yoffset) {
+
+}
+
+/*
 void Agent::core_init() {
 	initialized = false;
 	lifecount = 0;
@@ -1025,8 +1076,8 @@ void Agent::tick() {
 		shared_ptr<Room> r = world.map.roomAt(x, y);
 		if (r) {
 			r->catemp[emitca_index] += emitca_amount;
-			/*if (r->catemp[emitca_index] <= 0.0f) r->catemp[emitca_index] = 0.0f;
-			else if (r->catemp[emitca_index] >= 1.0f) r->catemp[emitca_index] = 1.0f;*/
+			//if (r->catemp[emitca_index] <= 0.0f) r->catemp[emitca_index] = 0.0f;
+			//else if (r->catemp[emitca_index] >= 1.0f) r->catemp[emitca_index] = 1.0f;
 		}
 	}
 
@@ -1216,10 +1267,10 @@ std::string Agent::identify() const {
 	const std::string n = catalogue.getAgentName(family, genus, species);
 	if (n.size())
 		o << " (" + n + ")";
-	/*if (unid != -1)
-		o << " unid " << unid;
-	else
-		o << " (no unid assigned)"; */
+	//if (unid != -1)
+	//	o << " unid " << unid;
+	//else
+	//	o << " (no unid assigned)";
 	return o.str();
 }
 
@@ -1291,7 +1342,7 @@ bool Agent::beDropped() {
 	// TODO: no idea if this is right, it tries to re-enable gravity when dropping agents
 	falling = true;
 
-	/* if our carrying agent was in a vehicle, we stay in the vehicle */
+	// if our carrying agent was in a vehicle, we stay in the vehicle
 	if (wascarriedby && wascarriedby->invehicle) {
 		wascarriedby->invehicle->addCarried(this);
 		// TODO: how to handle not-invehicle case, where vehicle has failed to pick us up?
@@ -1306,7 +1357,7 @@ bool Agent::beDropped() {
 			Vehicle *v = dynamic_cast<Vehicle *>(a.get());
 			if (!v) continue;
 
-			/* check whether our *centre* lies inside the vehicle cabin */
+			// check whether our *centre* lies inside the vehicle cabin
 			int xpt = x + getWidth() / 2;
 			if (xpt >= v->x + v->cabinleft && xpt <= v->x + v->cabinright) {
 				int ypt = y + getHeight() / 2;
@@ -1497,5 +1548,7 @@ void Agent::tickVoices() {
 		}
 	}
 }
+
+*/
 
 /* vim: set noet: */
