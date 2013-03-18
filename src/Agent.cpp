@@ -18,20 +18,69 @@
  */
 
 #include "Agent.h"
-//#include "MetaRoom.h"
-//#include "World.h"
 //#include "Engine.h"
-//#include <iostream>
+#include <iostream>
 //#include "caosVM.h"
 //#include "AudioBackend.h"
 #include <boost/format.hpp>
-//#include "Room.h"
-//#include "Vehicle.h"
-//#include "AgentHelpers.h"
+#include "AgentHelpers.h"
+#include "TextWorld.h"
 //#include "creaturesImage.h"
 //#include "Camera.h"
 //#include "VoiceData.h"
 
+double IrigiAgent::distance(IrigiAgent *a) {
+	return sqrt(pow(x - a->x, 2) + pow(y - a->y, 2) + pow(z - a->z, 2) );
+};
+
+bool IrigiAgent::queueScript(unsigned short event, AgentRef from) {
+	return false;
+}
+
+void IrigiAgent::stopScript() {
+
+}
+
+void IrigiAgent::setVoice(std::string name) {
+
+}
+
+bool IrigiAgent::vmStopped() {
+	return false;
+}
+
+void IrigiAgent::setClassifier(unsigned char f, unsigned char g, unsigned short s) {
+
+}
+
+
+
+
+
+// the virtual beasts
+void IrigiAgent::physicsTick() {
+
+}
+
+void IrigiAgent::carry(AgentRef) {
+
+}
+
+void IrigiAgent::drop(AgentRef) {
+
+}
+
+std::pair<int, int> IrigiAgent::getCarryPoint() {
+
+}
+
+std::pair<int, int> IrigiAgent::getCarriedPoint() {
+
+}
+
+void IrigiAgent::adjustCarried(float xoffset, float yoffset) {
+
+}
 
 /*
 void Agent::core_init() {

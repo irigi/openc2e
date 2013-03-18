@@ -36,7 +36,7 @@ struct agentzorder {
 	bool operator()(const class Agent *s1, const class Agent *s2) const;
 };
 
-class IrigiAgent {
+class IrigiAgent : public boost::enable_shared_from_this<IrigiAgent> {
 	friend class CreatureAgent;
 	friend class AgentRef;
 public:
@@ -55,6 +55,10 @@ public:
 	bool invisible() { return attr & 16; }
 	bool floatable() { return attr & 32; }
 
+	inline bool isDying() const {
+		return dying;
+	}
+
 	unsigned char family, genus;
 	unsigned short species;
 
@@ -66,18 +70,18 @@ public:
 
 	bool vmStopped();
 
-	double distance(IrigiAgent *a) { return sqrt(pow(x - a->x, 2) + pow(y - a->y, 2) + pow(z - a->z, 2) ); };
+	double distance(IrigiAgent *a);
 
 	void setClassifier(unsigned char f, unsigned char g, unsigned short s);
 protected:
 	std::map<unsigned int, boost::shared_ptr<genomeFile> > genome_slots;
-
+	bool dying : 1;
 
 	// to be polymorphic with CreatureAgent?
 	//virtual bool fireScript(unsigned short event, Agent *from, caosVar one, caosVar two);
 
 	virtual void physicsTick();
-	void physicsTickC2();
+	//void physicsTickC2();
 
 	virtual void carry(AgentRef);
 	virtual void drop(AgentRef);

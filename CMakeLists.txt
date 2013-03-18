@@ -40,7 +40,7 @@ ENDIF (OPENC2E_PROFILE_ALLOCATION)
 SET(OPENC2E_CORE
 	src/Agent.cpp
 #	src/AgentHelpers.cpp
-#	src/AgentRef.cpp
+	src/AgentRef.cpp
 #	src/alloc_count.cpp
 	src/creatures/attFile.cpp
 #	src/Backend.cpp
@@ -80,9 +80,9 @@ SET(OPENC2E_CORE
 #	src/caos/caosVM_vectors.cpp
 #	src/caos/caosVM_vehicles.cpp
 #	src/caos/caosVM_world.cpp
-#	${GEN}/cataloglexer.cpp
-#	src/Catalogue.cpp
-#	${GEN}/catalogue.tab.cpp
+	${GEN}/cataloglexer.cpp
+	src/Catalogue.cpp
+	${GEN}/catalogue.tab.cpp
 #	${GEN}/cmddata.cpp
 #	src/cobFile.cpp
 #	src/CompoundAgent.cpp
@@ -123,7 +123,7 @@ SET(OPENC2E_CORE
 #	src/SimpleAgent.cpp
 #	src/creatures/SkeletalCreature.cpp
 #	src/images/sprImage.cpp
-#	src/streamutils.cpp
+	src/streamutils.cpp
 #	src/Vehicle.cpp
 #	src/VoiceData.cpp
 #	src/World.cpp

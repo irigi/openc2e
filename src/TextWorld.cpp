@@ -179,3 +179,5 @@ char * textWindow::intprtkey(int ch) {
 
 
 const std::string textWorld::gametype = "c3";
+
+textWorld textworld;
