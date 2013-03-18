@@ -62,12 +62,24 @@ void IrigiAgent::physicsTick() {
 
 }
 
-void IrigiAgent::carry(AgentRef) {
+void IrigiAgent::carry(AgentRef a) {
+	assert(a);
 
+	// TODO: check for infinite loops (eg, us carrying an agent which is carrying us) :)
+	if (carrying)
+		drop(carrying);
+
+	carrying = a;
+
+	a->carriedby = AgentRef(this);
 }
 
-void IrigiAgent::drop(AgentRef) {
+void IrigiAgent::drop(AgentRef a) {
+	if (!carrying) return;
+	assert(carrying == a);
 
+	a->beDropped();
+	carrying = AgentRef(0);
 }
 
 std::pair<int, int> IrigiAgent::getCarryPoint() {
@@ -79,6 +91,15 @@ std::pair<int, int> IrigiAgent::getCarriedPoint() {
 }
 
 void IrigiAgent::adjustCarried(float xoffset, float yoffset) {
+
+}
+
+
+void IrigiAgent::beDropped() {
+	AgentRef wascarriedby = carriedby;
+	carriedby = AgentRef(0);
+	bool wasinvehicle = invehicle;
+	invehicle = AgentRef(0);
 
 }
 

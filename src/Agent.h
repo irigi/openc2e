@@ -85,6 +85,9 @@ protected:
 
 	virtual void carry(AgentRef);
 	virtual void drop(AgentRef);
+	void beDropped();
+
+	void addCarried(AgentRef);
 
 	virtual std::pair<int, int> getCarryPoint();
 	virtual std::pair<int, int> getCarriedPoint();

@@ -2,7 +2,7 @@
  * TextWorld.h
  *
  *  Created on: Mar 16, 2013
- *      Author: ad
+ *      Author: irigi
  */
 
 #ifndef TEXTWORLD_H_
@@ -19,31 +19,21 @@
 #include "exceptions.h"
 
 class IrigiAgent;
+class textWindow;
 
-void startCurses();
-void endCurses();
-void text_world();
-
-// this should really be a singleton class, but I don't know how to do that now
-// so I'm keeping it like this
-class textWindow {
-public:
-	textWindow();
-	~textWindow();
-	void initColors();
-	static char * intprtkey(int ch);
-
-private:
-	WINDOW * mainwin;
-	int oldcur;
-
-};
 
 // the whole universe
 class textWorld {
 public:
+	textWorld();
+	~textWorld();
+
+	void tests();
+
 	bool quitting, saving, paused;
 	std::list<boost::shared_ptr<IrigiAgent> > agents;
+
+	textWindow * console;
 
 	static const std::string gametype;
 private:
