@@ -22,7 +22,7 @@
 #include "c2eCreature.h"
 #include "CreatureAgent.h"
 //#include "World.h"
-#include "Catalogue.h"
+//#include "Catalogue.h"
 #include "c2eBrain.h"
 #include "oldBrain.h"
 
@@ -265,18 +265,18 @@ c2eCreature::c2eCreature(shared_ptr<genomeFile> g, bool is_female, unsigned char
 
 	halflives = 0;
 
-	if (!catalogue.hasTag("Action Script To Neuron Mappings"))
-		throw creaturesException("c2eCreature was unable to read the 'Action Script To Neuron Mappings' catalogue tag");
-	const std::vector<std::string> &mappinginfotag = catalogue.getTag("Action Script To Neuron Mappings");
-	for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++)
-		mappinginfo.push_back(atoi(i->c_str()));
+	//if (!catalogue.hasTag("Action Script To Neuron Mappings"))
+	//	throw creaturesException("c2eCreature was unable to read the 'Action Script To Neuron Mappings' catalogue tag");
+	//const std::vector<std::string> &mappinginfotag = catalogue.getTag("Action Script To Neuron Mappings");
+	//for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++)
+	//	mappinginfo.push_back(atoi(i->c_str()));
 
 	// TODO: should we really hard-code this?
 	chosenagents.resize(40);
 
 	brain = new c2eBrain(this);
 	finishInit();
-	brain->init();	
+	brain->init();
 }
 
 unsigned int c1Creature::getGait() {

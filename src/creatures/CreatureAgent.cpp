@@ -103,4 +103,8 @@ void CreatureAgent::approach(AgentRef it) {
 	approachtarget = it;
 }
 
+IrigiAgent* SkeletalCreature::getAgent() {
+	return 0;
+}
+
 /* vim: set noet: */

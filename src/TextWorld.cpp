@@ -20,6 +20,8 @@
 #include <fstream>
 #include "PathResolver.h"
 #include "creatures/Creature.h"
+#include "creatures/CreatureAgent.h"
+#include "creatures/c2eCreature.h"
 //#include "creatures/SkeletalCreature.h"
 
 #include <boost/format.hpp>
@@ -28,10 +30,10 @@ namespace fs = boost::filesystem;
 
 
 void textWorld::tests() {
-	std::string genome = "ff";
-	loadGenome(genome);
+	//executeBootstrap(false);
+	newNorn();
 
-
+/*
 	int ch = 0, x = 5, y = 5;
     while ( (ch = getch()) != 'q' ) {
     	mvprintw(x, y, " ");
@@ -47,18 +49,17 @@ void textWorld::tests() {
 
     	mvprintw(x, y, "X");
     	refresh();
-    }
+    }*/
 
-    executeBootstrap(false);
-    mvprintw(5,5,"%d\n", data_directories.size());
-    refresh();
+    //mvprintw(5,5,"%d\n", data_directories.size());
+    //refresh();
     getchar();
 
 }
 
 textWorld::textWorld() {
-	console = new textWindow();
-	console->initColors();
+	//console = new textWindow();
+	//console->initColors();
 
 	data_directories;
 
@@ -74,13 +75,15 @@ textWorld::textWorld() {
 }
 
 textWorld::~textWorld() {
-	delete console;
+	//delete console;
 }
 
 shared_ptr<genomeFile> textWorld::loadGenome(std::string &genefile) {
 	std::vector<std::string> possibles = findFiles("/Genetics/", genefile + ".gen");
+	printf("size: %d\n", possibles.size());
 	if (possibles.empty()) return shared_ptr<genomeFile>();
 	genefile = possibles[(int)((float)possibles.size() * (rand() / (RAND_MAX + 1.0)))];
+	printf("loaded genome: %s\n", genefile.c_str());
 
 	shared_ptr<genomeFile> p(new genomeFile());
 	std::ifstream gfile(genefile.c_str(), std::ios::binary);
@@ -142,7 +145,7 @@ void textWorld::executeBootstrap(bool switcher) {
 			// iterate through each bootstrap directory
 			for (fs::directory_iterator d(b); d != fsend; ++d) {
 				if (fs::exists(*d) && fs::is_directory(*d)) {
-					std::string s = d->path().leaf();
+					std::string s = d->path().leaf().string();
 					// TODO: cvillage has switcher code in 'Startup', so i included it here too
 					if (s == "000 Switcher" || s == "Startup") {
 						if (!switcher) continue;
@@ -182,7 +185,7 @@ void textWorld::executeBootstrap(fs::path p) {
 }
 
 void textWorld::newNorn() {
-	std::string genomefile = "test";
+	std::string genomefile = "*";
 	shared_ptr<genomeFile> genome;
 	try {
 		genome = textworld.loadGenome(genomefile);
@@ -196,12 +199,12 @@ void textWorld::newNorn() {
 		return;
 	}
 
-	CreatureAgent *a = new CreatureAgent();
+	SkeletalCreature *a = new SkeletalCreature();
 
 	int sex = 1 + (int) (2.0 * (rand() / (RAND_MAX + 1.0)));
-	c2Creature *c;
+	c2eCreature *c;
 	try {
-		c = new c2Creature(genome, (sex == 2), 0, a);
+		c = new c2eCreature(genome, (sex == 2), 0, a);
 	} catch (creaturesException &e) {
 		delete a;
 		fprintf(stderr, "Couldn't create creature: %s\n", e.prettyPrint().c_str());

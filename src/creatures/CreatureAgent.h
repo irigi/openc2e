@@ -56,5 +56,10 @@ public:
 	bool isApproaching() { return approaching; }	
 };
 
+class SkeletalCreature : public IrigiAgent, public CreatureAgent {
+protected:
+	IrigiAgent *getAgent();
+};
+
 #endif
 /* vim: set noet: */

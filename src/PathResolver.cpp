@@ -54,7 +54,7 @@ static path lcpath(path &orig) {
 static path lcleaf(path &orig) {
 	path br, leaf;
 	br = orig.branch_path();
-	leaf = path(toLowerCase(orig.leaf())); // XXX .string() removed from leaf()
+	leaf = path(toLowerCase(orig.leaf().string())); // XXX .string() removed from leaf()
 	return br / leaf;
 }
 
