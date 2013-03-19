@@ -110,7 +110,7 @@ SET(OPENC2E_CORE
 #	${GEN}/mngparser.tab.cpp
 #	src/MusicManager.cpp
 	src/creatures/oldBrain.cpp
-#	src/PathResolver.cpp
+	src/PathResolver.cpp
 #	src/peFile.cpp
 #	src/physics.cpp
 #	src/PointerAgent.cpp
