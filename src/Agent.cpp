@@ -29,6 +29,30 @@
 //#include "Camera.h"
 //#include "VoiceData.h"
 
+IrigiAgent::IrigiAgent(unsigned char f, unsigned char g, unsigned short s, unsigned int p) {
+	x = 0; y = 0; z = 0;
+
+	family = f;
+	genus = g;
+	species = s;
+
+	genome_slots;
+}
+
+IrigiAgent::IrigiAgent() {
+	x = 0; y = 0; z = 0;
+
+	family = 0;
+	genus = 0;
+	species = 0;
+
+	genome_slots;
+}
+
+IrigiAgent::~IrigiAgent() {
+
+}
+
 double IrigiAgent::distance(IrigiAgent *a) {
 	return sqrt(pow(x - a->x, 2) + pow(y - a->y, 2) + pow(z - a->z, 2) );
 };

@@ -39,6 +39,7 @@ void CreatureAgent::setCreature(Creature *c) {
 	assert(c);
 	creature = c;
 
+	//creature->getGenome(); // test
 	getAgent()->genome_slots[0] = creature->getGenome();
 
 	unsigned short species = (creature->isFemale() ? 2 : 1);
@@ -104,7 +105,7 @@ void CreatureAgent::approach(AgentRef it) {
 }
 
 IrigiAgent* SkeletalCreature::getAgent() {
-	return 0;
+	return this;
 }
 
 /* vim: set noet: */
