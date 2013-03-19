@@ -107,6 +107,7 @@ std::string script::dump() {
 
 caosScript::caosScript(const std::string &dialect, const std::string &fn) {
 	enumdepth = 0;
+	std::cout << "dialect: " << dialect << "\n"; std::cout.flush(); std::cerr.flush();
 	d = dialects[dialect].get();
 	if (!d)
 		throw parseException(std::string("Unknown dialect ") + dialect);

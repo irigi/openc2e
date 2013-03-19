@@ -518,14 +518,19 @@ void World::executeInitScript(fs::path p) {
 	std::string x = p.string();
 	std::ifstream s(x.c_str());
 	assert(s.is_open());
-	//std::cout << "executing script " << x << "...\n";
-	//std::cout.flush(); std::cerr.flush();
+	std::cout << "executing script " << x << "...\n";
+	std::cout.flush(); std::cerr.flush();
 	try {
 		caosScript script(gametype, x);
+			std::cout << "A\n"; std::cout.flush(); std::cerr.flush();
 		script.parse(s);
+			std::cout << "A\n"; std::cout.flush(); std::cerr.flush();
 		caosVM vm(0);
+			std::cout << "A\n"; std::cout.flush(); std::cerr.flush();
 		script.installScripts();
+			std::cout << "A\n"; std::cout.flush(); std::cerr.flush();
 		vm.runEntirely(script.installer);
+			std::cout << "A\n"; std::cout.flush(); std::cerr.flush();
 	} catch (creaturesException &e) {
 		std::cerr << "exec of \"" << p.leaf() << "\" failed due to exception " << e.prettyPrint() << std::endl;
 	} catch (std::exception &e) {
