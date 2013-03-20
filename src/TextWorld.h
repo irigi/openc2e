@@ -33,6 +33,7 @@ namespace fs = boost::filesystem;
 class IrigiAgent;
 class textWindow;
 class genomeFile;
+class PhysicalCreature;
 
 
 // the whole universe
@@ -49,7 +50,7 @@ public:
 	void executeBootstrap(fs::path p);
 
 	void makeNewEgg();
-	void newNorn();
+	PhysicalCreature *newNorn();
 
 	void tests();
 

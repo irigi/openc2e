@@ -22,7 +22,6 @@
 #include "creatures/Creature.h"
 #include "creatures/CreatureAgent.h"
 #include "creatures/c2eCreature.h"
-//#include "creatures/SkeletalCreature.h"
 
 #include <boost/format.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -31,7 +30,10 @@ namespace fs = boost::filesystem;
 
 void textWorld::tests() {
 	//executeBootstrap(false);
-	newNorn();
+	PhysicalCreature *norn = newNorn();
+
+	for(int i = 0; i < 10; i++)
+		norn->tick();
 
 /*
 	int ch = 0, x = 5, y = 5;
@@ -53,7 +55,7 @@ void textWorld::tests() {
 
     //mvprintw(5,5,"%d\n", data_directories.size());
     //refresh();
-    getchar();
+    //getchar();
 
 }
 
@@ -80,7 +82,6 @@ textWorld::~textWorld() {
 
 shared_ptr<genomeFile> textWorld::loadGenome(std::string &genefile) {
 	std::vector<std::string> possibles = findFiles("/Genetics/", genefile + ".gen");
-	printf("size: %d\n", possibles.size());
 	if (possibles.empty()) return shared_ptr<genomeFile>();
 	genefile = possibles[(int)((float)possibles.size() * (rand() / (RAND_MAX + 1.0)))];
 	printf("loaded genome: %s\n", genefile.c_str());
@@ -184,22 +185,21 @@ void textWorld::executeBootstrap(fs::path p) {
 		;
 }
 
-void textWorld::newNorn() {
+PhysicalCreature* textWorld::newNorn() {
 	std::string genomefile = "*";
 	shared_ptr<genomeFile> genome;
 	try {
 		genome = textworld.loadGenome(genomefile);
 	} catch (creaturesException &e) {
 		fprintf(stderr, "Couldn't load genome file: %s", e.prettyPrint().c_str() );
-		return;
+		return NULL;
 	}
 
 	if (!genome) {
-		//
-		return;
+		return NULL;
 	}
 
-	SkeletalCreature *a = new SkeletalCreature();
+	PhysicalCreature *a = new PhysicalCreature();
 
 	int sex = 1 + (int) (2.0 * (rand() / (RAND_MAX + 1.0)));
 	c2eCreature *c;
@@ -208,21 +208,23 @@ void textWorld::newNorn() {
 	} catch (creaturesException &e) {
 		delete a;
 		fprintf(stderr, "Couldn't create creature: %s\n", e.prettyPrint().c_str());
-		return;
+		return NULL;
 	}
 
 	a->setCreature(c);
-	//a->finishInit();
+	a->finishInit();
 
 	// if you make this work for c2e, you should probably set sane attributes here?
 
-	//a->genome_slots[0] = genome;
+	a->genome_slots[0] = genome;
 	//textworld.newMoniker(genome, genomefile, a);
 	//world.history.getMoniker(world.history.findMoniker(genome)).moveToCreature(a);
 
 	// TODO: set it dreaming
 
 	c->born();
+
+	return a;
 }
 
 void textWorld::makeNewEgg() {

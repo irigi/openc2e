@@ -40,12 +40,13 @@ public:
 	assertFailure(const char *x) throw() : creaturesException(x) { }
 };
 
+/*
 #define caos_assert(x) if (!(x)) { throw caosException(boost::str(boost::format("%s thrown from %s:%d") % #x % __FILE__ % __LINE__)); }
 #define ensure_assert(x) do {\
 	bool ensure__v = (x); \
 	if (!ensure__v) \
 		assert(ensure__v && (x)); \
-} while (0)
+} while (0)*/
 
 // Forward declarations so we can friend them later without pulling in
 // huge system headers.
@@ -55,6 +56,7 @@ namespace boost {
 	}
 }
 
+/*
 #define SER_PROTO(friend, fname, c, const) \
 	template <class Archive> friend void fname(Archive &ar, const c & obj, const unsigned int version)
 
@@ -63,7 +65,9 @@ namespace boost {
 	friend class boost::serialization::access; \
 	SER_PROTO(friend, o_save, c, const); \
 	SER_PROTO(friend, o_load, c, ); \
-	SER_PROTO(friend, o_serialize, c, );
+	SER_PROTO(friend, o_serialize, c, );*/
+
+char * BOOL_S(bool s);
 
 #endif
 /* vim: set noet: */

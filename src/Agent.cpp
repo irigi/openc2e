@@ -53,9 +53,13 @@ IrigiAgent::~IrigiAgent() {
 
 }
 
+void IrigiAgent::finishInit() {
+
+}
+
 double IrigiAgent::distance(IrigiAgent *a) {
 	return sqrt(pow(x - a->x, 2) + pow(y - a->y, 2) + pow(z - a->z, 2) );
-};
+}
 
 bool IrigiAgent::queueScript(unsigned short event, AgentRef from) {
 	return false;

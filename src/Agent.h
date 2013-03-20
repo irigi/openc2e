@@ -39,12 +39,15 @@ struct agentzorder {
 class IrigiAgent : public boost::enable_shared_from_this<IrigiAgent> {
 	friend class CreatureAgent;
 	friend class AgentRef;
+	friend class textWorld;
 public:
 	int x, y, z;
 
 	IrigiAgent(unsigned char f, unsigned char g, unsigned short s, unsigned int p);
 	IrigiAgent();
 	~IrigiAgent();
+
+	void finishInit();
 
 	bool queueScript(unsigned short event, AgentRef from = AgentRef()/*, caosVar p0 = caosVar(), caosVar p1 = caosVar()*/);
 	void stopScript();

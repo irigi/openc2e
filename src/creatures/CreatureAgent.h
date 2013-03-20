@@ -56,9 +56,11 @@ public:
 	bool isApproaching() { return approaching; }	
 };
 
-class SkeletalCreature : public IrigiAgent, public CreatureAgent {
+class PhysicalCreature : public IrigiAgent, public CreatureAgent {
 protected:
 	IrigiAgent *getAgent();
+public:
+	void finishInit();
 };
 
 #endif

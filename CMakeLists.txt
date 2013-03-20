@@ -38,7 +38,8 @@ IF (OPENC2E_PROFILE_ALLOCATION)
 ENDIF (OPENC2E_PROFILE_ALLOCATION)
 
 SET(OPENC2E_CORE
-        src/TextDraw.cpp
+	src/openc2e.cpp
+	src/TextDraw.cpp
 	src/Agent.cpp
 	src/AgentHelpers.cpp
 	src/AgentRef.cpp

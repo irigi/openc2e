@@ -25,6 +25,10 @@
 //#include "Catalogue.h"
 #include "c2eBrain.h"
 #include "oldBrain.h"
+#include <stdio.h>
+#include "openc2e.h"
+
+const bool debug = true;
 
 Creature::Creature(shared_ptr<genomeFile> g, bool is_female, unsigned char _variant, CreatureAgent *a) {
 	assert(g);
@@ -81,6 +85,17 @@ bool Creature::shouldProcessGene(gene *g) {
 
 void Creature::processGenes() {
 	for (vector<gene *>::iterator i = genome->genes.begin(); i != genome->genes.end(); i++) {
+		if(debug) {
+			printf("  gene %s: %s (Ex:%s F:%s M:%s Del:%s Dup:%s, Sta:%d, %d %d %d)\n", (*i)->typeName(), (*i)->name(),
+					BOOL_S(!(*i)->header.flags.notexpressed),
+					BOOL_S((*i)->header.flags.femaleonly),
+					BOOL_S((*i)->header.flags.maleonly),
+					BOOL_S((*i)->header.flags.delable),
+					BOOL_S((*i)->header.flags.dupable),
+					int((*i)->header.switchontime),
+					(*i)->header.generation, (*i)->header.mutweighting, (*i)->header.variant);
+		}
+
 		if (shouldProcessGene(*i)) addGene(*i);
 	}
 }
@@ -265,11 +280,28 @@ c2eCreature::c2eCreature(shared_ptr<genomeFile> g, bool is_female, unsigned char
 
 	halflives = 0;
 
-	//if (!catalogue.hasTag("Action Script To Neuron Mappings"))
-	//	throw creaturesException("c2eCreature was unable to read the 'Action Script To Neuron Mappings' catalogue tag");
-	//const std::vector<std::string> &mappinginfotag = catalogue.getTag("Action Script To Neuron Mappings");
-	//for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++)
-	//	mappinginfo.push_back(atoi(i->c_str()));
+	//ARRAY "Action Script To Neuron Mappings" 14
+	//# first six neurons are:  quiescent, activate1, get, drop, eat, activate2
+	mappinginfo.push_back(0);
+	mappinginfo.push_back(1);
+	mappinginfo.push_back(6);
+	mappinginfo.push_back(7);
+	mappinginfo.push_back(12);
+	mappinginfo.push_back(2);
+
+	//# (next two neurons are) approach, hit:
+	mappinginfo.push_back(4);
+	mappinginfo.push_back(13);
+
+	//# (next four neurons are) retreat, express_need, rest, right, left, :
+	mappinginfo.push_back(5);
+	mappinginfo.push_back(8);
+	mappinginfo.push_back(9);
+	mappinginfo.push_back(10);
+	mappinginfo.push_back(11);
+
+	//# (next four neurons are) deactivate - unused
+	mappinginfo.push_back(3);
 
 	// TODO: should we really hard-code this?
 	chosenagents.resize(40);
@@ -371,6 +403,8 @@ void c2Creature::tick() {
 void c2eCreature::tick() {
 	// TODO: should we tick some things even if dead?
 	if (!alive) return;
+
+	if(debug) printf("c2eCreature ticked\n");
 
 	// TODO: update muscleenergy
 
