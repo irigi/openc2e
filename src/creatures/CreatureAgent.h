@@ -54,6 +54,7 @@ public:
 	void stopWalking();
 	void approach(AgentRef it);
 	bool isApproaching() { return approaching; }	
+	void consoleOutput();
 };
 
 class PhysicalCreature : public IrigiAgent, public CreatureAgent {

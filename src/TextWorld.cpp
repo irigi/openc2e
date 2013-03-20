@@ -32,8 +32,12 @@ void textWorld::tests() {
 	//executeBootstrap(false);
 	PhysicalCreature *norn = newNorn();
 
+	norn->consoleOutput();
+
 	for(int i = 0; i < 10; i++)
 		norn->tick();
+
+	norn->consoleOutput();
 
 /*
 	int ch = 0, x = 5, y = 5;

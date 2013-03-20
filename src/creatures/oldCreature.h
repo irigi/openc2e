@@ -120,6 +120,8 @@ public:
 	unsigned char *getLocusPointer(bool receptor, unsigned char o, unsigned char t, unsigned char l);
 
 	unsigned int getGait();
+
+	void consoleOutput();
 };
 
 // c2
@@ -196,6 +198,8 @@ public:
 	
 	void applyInjury(float);
 
+	void consoleOutput();
+
 };
 
 class c2Creature : public oldCreature {
@@ -223,6 +227,8 @@ public:
 	unsigned char *getLocusPointer(bool receptor, unsigned char o, unsigned char t, unsigned char l);
 	
 	unsigned int getGait();
+
+	void consoleOutput();
 };
 
 #endif

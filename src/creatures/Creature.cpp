@@ -502,4 +502,21 @@ void c2eCreature::adjustDrive(unsigned int id, float value) {
 	else if (drives[id] > 1.0f) drives[id] = 1.0f;
 }
 
+void c2eCreature::consoleOutput() {
+	printf("Chemical levels\n");
+
+	for(int i = 0; i < 256; i++) {
+		printf("%.3f  ", chemicals[i]);
+	}
+	printf("\n");
+}
+
+void c2Creature::consoleOutput() {
+
+}
+
+void c1Creature::consoleOutput() {
+
+}
+
 /* vim: set noet: */

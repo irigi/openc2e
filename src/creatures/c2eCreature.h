@@ -170,6 +170,8 @@ public:
 	float *getLocusPointer(bool receptor, unsigned char o, unsigned char t, unsigned char l);
 	
 	unsigned int getGait();
+
+	void consoleOutput();
 };
 
 #endif

@@ -78,6 +78,7 @@ protected:
 public:
 	virtual ~Creature();
 	virtual void tick();
+	virtual void consoleOutput() { }
 
 	virtual void ageCreature();
 	lifestage getStage() { return stage; }

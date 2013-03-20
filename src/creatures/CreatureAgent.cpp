@@ -72,6 +72,10 @@ void CreatureAgent::tick() {
 	if(debug) printf("CreatureAgent ticked\n");
 }
 
+void CreatureAgent::consoleOutput() {
+	creature->consoleOutput();
+}
+
 void CreatureAgent::startWalking() {
 	walking = true;
 	approaching = false;
