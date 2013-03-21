@@ -48,6 +48,7 @@ public:
 	std::vector<std::string> findFiles(std::string dir, std::string wild);
 	void executeBootstrap(bool switcher);
 	void executeBootstrap(fs::path p);
+	void initCatalogue();
 
 	void makeNewEgg();
 	PhysicalCreature *newNorn();

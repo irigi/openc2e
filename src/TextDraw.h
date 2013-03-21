@@ -18,6 +18,8 @@
 #include <list>
 #include "exceptions.h"
 
+class Creature;
+
 // this should really be a singleton class, but I don't know how to do that now
 // so I'm keeping it like this
 class textWindow {
@@ -26,9 +28,17 @@ public:
 	~textWindow();
 	void initColors();
 	static char * intprtkey(int ch);
+	void switchWin(int no);
+	WINDOW * activeWin();
+
+	void drawNornChemicalsWindow(WINDOW * win, Creature * norn);
 
 private:
 	WINDOW * mainwin;
+	WINDOW * F1win;
+	WINDOW * F2win;
+	WINDOW * F3win;
+	WINDOW * activewin;
 	int oldcur;
 
 };

@@ -39,7 +39,6 @@ ENDIF (OPENC2E_PROFILE_ALLOCATION)
 
 SET(OPENC2E_CORE
 	src/openc2e.cpp
-	src/TextDraw.cpp
 	src/Agent.cpp
 	src/AgentHelpers.cpp
 	src/AgentRef.cpp
@@ -129,6 +128,7 @@ SET(OPENC2E_CORE
 #	src/Vehicle.cpp
 #	src/VoiceData.cpp
 #	src/World.cpp
+	src/TextDraw.cpp
         src/TextWorld.cpp
 	src/main.cpp
 	src/util.cpp
@@ -205,7 +205,7 @@ ENDIF(HAVE_STDINT_H)
 #ENDIF(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
 #FIND_PACKAGE(ALUT)
 
-FIND_PACKAGE(Boost 1.46.0 COMPONENTS program_options filesystem thread regex serialization REQUIRED)
+FIND_PACKAGE(Boost 1.42.0 COMPONENTS program_options filesystem thread regex serialization REQUIRED)
 FIND_LIBRARY(BOOST_SYSTEM_LIBRARY NAMES boost_system-mt)
 IF(OPENC2E_USE_QT)
 	find_package(Qt4 REQUIRED)

@@ -107,6 +107,7 @@ public:
 	int getDecisionId() { return decn; }
 
 	virtual unsigned int getGait() = 0;
+	virtual float getFloatChemical(unsigned char k) { return 0; };
 	
 	void born();
 	void die();

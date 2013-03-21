@@ -69,7 +69,6 @@ void CreatureAgent::setCreature(Creature *c) {
 
 void CreatureAgent::tick() {
 	creature->tick();
-	if(debug) printf("CreatureAgent ticked\n");
 }
 
 void CreatureAgent::consoleOutput() {

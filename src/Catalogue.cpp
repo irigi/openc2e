@@ -105,7 +105,9 @@ std::istream &operator >> (std::istream &s, Catalogue &c) {
 	Catalogue::yyinit(buf.c_str());
 	parsing_cat = &c;
 			
+	std::cout << "C" << std::endl;
 	cataparse();
+	std::cout << "D" << std::endl;
 
 	return s;
 }
@@ -130,7 +132,7 @@ void Catalogue::initFrom(fs::path path) {
 	assert(fs::exists(path));
 	assert(fs::is_directory(path));
 	
-	//std::cout << "Catalogue is reading " << path.native_directory_string() << std::endl;
+	std::cout << "Catalogue is reading " << path.native_directory_string() << std::endl;
 
 	fs::directory_iterator end;
 	std::string file;
@@ -143,6 +145,8 @@ void Catalogue::initFrom(fs::path path) {
 					// TODO: this is NOT how we should do it
 					if (x[x.size() - 2] != 'e' || x[x.size() - 1] != 'n') continue; // skip all non-english localised files
 				}
+
+				std::cout << "Catalogue is reading " << (*i).filename() << std::endl;
 
 				addFile(*i);
 			}

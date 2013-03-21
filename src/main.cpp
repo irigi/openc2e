@@ -45,6 +45,7 @@
 extern "C" int main(int argc, char *argv[]) {
 
 	// trial and error by irigi
+	textworld.initCatalogue();
 	textworld.tests();
 
 	return 0;

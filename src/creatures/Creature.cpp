@@ -22,7 +22,7 @@
 #include "c2eCreature.h"
 #include "CreatureAgent.h"
 //#include "World.h"
-//#include "Catalogue.h"
+#include "Catalogue.h"
 #include "c2eBrain.h"
 #include "oldBrain.h"
 #include <stdio.h>
@@ -280,28 +280,11 @@ c2eCreature::c2eCreature(shared_ptr<genomeFile> g, bool is_female, unsigned char
 
 	halflives = 0;
 
-	//ARRAY "Action Script To Neuron Mappings" 14
-	//# first six neurons are:  quiescent, activate1, get, drop, eat, activate2
-	mappinginfo.push_back(0);
-	mappinginfo.push_back(1);
-	mappinginfo.push_back(6);
-	mappinginfo.push_back(7);
-	mappinginfo.push_back(12);
-	mappinginfo.push_back(2);
-
-	//# (next two neurons are) approach, hit:
-	mappinginfo.push_back(4);
-	mappinginfo.push_back(13);
-
-	//# (next four neurons are) retreat, express_need, rest, right, left, :
-	mappinginfo.push_back(5);
-	mappinginfo.push_back(8);
-	mappinginfo.push_back(9);
-	mappinginfo.push_back(10);
-	mappinginfo.push_back(11);
-
-	//# (next four neurons are) deactivate - unused
-	mappinginfo.push_back(3);
+	if (!catalogue.hasTag("Action Script To Neuron Mappings"))
+		throw creaturesException("c2eCreature was unable to read the 'Action Script To Neuron Mappings' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("Action Script To Neuron Mappings");
+	for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++)
+		mappinginfo.push_back(atoi(i->c_str()));
 
 	// TODO: should we really hard-code this?
 	chosenagents.resize(40);
@@ -404,8 +387,6 @@ void c2eCreature::tick() {
 	// TODO: should we tick some things even if dead?
 	if (!alive) return;
 
-	if(debug) printf("c2eCreature ticked\n");
-
 	// TODO: update muscleenergy
 
 	senses[0] = 1.0f; // always-on
@@ -503,10 +484,16 @@ void c2eCreature::adjustDrive(unsigned int id, float value) {
 }
 
 void c2eCreature::consoleOutput() {
+	if (!catalogue.hasTag("chemical_names"))
+		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
+
 	printf("Chemical levels\n");
 
-	for(int i = 0; i < 256; i++) {
-		printf("%.3f  ", chemicals[i]);
+	int k = 0;
+	for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++) {
+		printf("%.3f (%s)\n", chemicals[k], i->c_str());
+		if(k > 256) break; k++;
 	}
 	printf("\n");
 }

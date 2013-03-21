@@ -11,66 +11,135 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include "TextDraw.h"
+#include "PathResolver.h"
+#include "creatures/Creature.h"
+#include "creatures/CreatureAgent.h"
+#include "creatures/c2eCreature.h"
+#include "Catalogue.h"
 
 #include <time.h>
 #include <signal.h>
 #include <sys/time.h>
 #include <ctype.h>
 
+//bool curses_started = false;
 
+WINDOW *create_newwin(int height, int width, int starty, int startx)
+{	WINDOW *local_win;
 
-bool curses_started = false;
+	local_win = newwin(height, width, starty, startx);
+	box(local_win, 0 , 0);
+	wrefresh(local_win);
+
+	return local_win;
+}
+
+void destroy_win(WINDOW *local_win)
+{
+	wborder(local_win, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+	wrefresh(local_win);
+	delwin(local_win);
+}
 
 textWindow::textWindow() {
 	/* Init curses */
-    if ( (mainwin = initscr()) == NULL ) {
+    if ( (mainwin = initscr()) == NULL) {
         perror("error initialising ncurses");
         exit(EXIT_FAILURE);
     }
 
+    F1win = create_newwin(LINES,COLS,0,0);
+    F2win = create_newwin(LINES,COLS,0,0);
+    F3win = create_newwin(LINES,COLS,0,0);
+
+    activewin = F1win;
     noecho();
     keypad(mainwin, TRUE);
+    //raw(); /* ctrl-C is not interpreted etc */
     oldcur = curs_set(0);
 }
 
 textWindow::~textWindow() {
     delwin(mainwin);
+    delwin(F1win);
+    delwin(F2win);
+    delwin(F3win);
     endwin();
     refresh();
+}
+
+void textWindow::switchWin(int no) {
+	switch(no) {
+	case 1:
+		activewin = F1win;
+		touchwin(activewin);
+		redrawwin(activewin);
+		break;
+	case 2:
+		activewin = F2win;
+		touchwin(activewin);
+		redrawwin(activewin);
+		break;
+	case 3:
+		activewin = F3win;
+		touchwin(activewin);
+		redrawwin(activewin);
+		break;
+	}
+
+}
+
+WINDOW * textWindow::activeWin() {
+	return activewin;
+}
+
+void textWindow::drawNornChemicalsWindow(WINDOW * win, Creature * norn) {
+	if (!catalogue.hasTag("chemical_names"))
+		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
+
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2, "Chemical levels: ");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	int k = -1; const int wrap = 35, spac = 25;
+	for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++) {
+		if(k > 256 || k < 0 || 2 + (k/wrap)*spac > COLS) {
+			k++;
+			continue;
+		}
+
+		mvwprintw(win, 5 + k % wrap, 2 + (k/wrap)*spac,
+				"%3d %s", int(round(100*norn->getFloatChemical(k+1))), i->c_str());
+
+		k++;
+	}
 }
 
 void textWindow::initColors() {
     start_color();
 
-    if ( has_colors() && COLOR_PAIRS >= 13 ) {
+    if ( has_colors() && COLOR_PAIRS >= 14 ) {
 
     	int n = 1;
 
-
-    	/*  Initialize a bunch of colour pairs, where:
-
-	        init_pair(pair number, foreground, background);
-
-	    	specifies the pair.                                  */
-
-    	init_pair(1,  COLOR_RED,     COLOR_BLACK);
-    	init_pair(2,  COLOR_GREEN,   COLOR_BLACK);
-    	init_pair(3,  COLOR_YELLOW,  COLOR_BLACK);
-    	init_pair(4,  COLOR_BLUE,    COLOR_BLACK);
-    	init_pair(5,  COLOR_MAGENTA, COLOR_BLACK);
-    	init_pair(6,  COLOR_CYAN,    COLOR_BLACK);
-    	init_pair(7,  COLOR_BLUE,    COLOR_WHITE);
-    	init_pair(8,  COLOR_WHITE,   COLOR_RED);
-    	init_pair(9,  COLOR_BLACK,   COLOR_GREEN);
-    	init_pair(10, COLOR_BLUE,    COLOR_YELLOW);
-    	init_pair(11, COLOR_WHITE,   COLOR_BLUE);
-    	init_pair(12, COLOR_WHITE,   COLOR_MAGENTA);
-    	init_pair(13, COLOR_BLACK,   COLOR_CYAN);
-
+    	init_pair(1,  COLOR_WHITE,   COLOR_BLACK);
+    	init_pair(2,  COLOR_RED,     COLOR_BLACK);
+    	init_pair(3,  COLOR_GREEN,   COLOR_BLACK);
+    	init_pair(4,  COLOR_YELLOW,  COLOR_BLACK);
+    	init_pair(5,  COLOR_BLUE,    COLOR_BLACK);
+    	init_pair(6,  COLOR_MAGENTA, COLOR_BLACK);
+    	init_pair(7,  COLOR_CYAN,    COLOR_BLACK);
+    	init_pair(8,  COLOR_BLUE,    COLOR_WHITE);
+    	init_pair(9,  COLOR_WHITE,   COLOR_RED);
+    	init_pair(10, COLOR_BLACK,   COLOR_GREEN);
+    	init_pair(11, COLOR_BLUE,    COLOR_YELLOW);
+    	init_pair(12, COLOR_WHITE,   COLOR_BLUE);
+    	init_pair(13, COLOR_WHITE,   COLOR_MAGENTA);
+    	init_pair(14, COLOR_BLACK,   COLOR_CYAN);
     }
 }
-
-/*  Struct to hold keycode/keyname information  */
 
 struct keydesc {
     int  code;
@@ -78,11 +147,7 @@ struct keydesc {
 };
 
 
-/*  Returns a string describing a character passed to it  */
-
 char * textWindow::intprtkey(int ch) {
-
-    /*  Define a selection of keys we will handle  */
 
     static struct keydesc keys[] = {
     		{ KEY_UP,        "Up arrow"        },
@@ -114,14 +179,10 @@ char * textWindow::intprtkey(int ch) {
 
     if ( isprint(ch) && !(ch & KEY_CODE_YES)) {
 
-	/*  If a printable character  */
-
 	keych[0] = ch;
 	return keych;
     }
     else {
-
-	/*  Non-printable, so loop through our array of structs  */
 
 	int n = 0;
 
@@ -136,3 +197,4 @@ char * textWindow::intprtkey(int ch) {
 
     return NULL;        /*  We shouldn't get here  */
 }
+

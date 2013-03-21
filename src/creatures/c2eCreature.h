@@ -154,6 +154,7 @@ public:
 
 	void adjustChemical(unsigned char id, float value);
 	float getChemical(unsigned char id) { return chemicals[id]; }
+	float getFloatChemical(unsigned char k) { return getChemical(k); };
 	void adjustDrive(unsigned int id, float value);
 	float getDrive(unsigned int id) { assert(id < 20); return drives[id]; }
 

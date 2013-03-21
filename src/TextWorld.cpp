@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <ncurses.h>
+#include <panel.h>
 #include <stdlib.h>
 #include "TextWorld.h"
 #include "TextDraw.h"
@@ -22,6 +23,7 @@
 #include "creatures/Creature.h"
 #include "creatures/CreatureAgent.h"
 #include "creatures/c2eCreature.h"
+#include "Catalogue.h"
 
 #include <boost/format.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -31,6 +33,7 @@ namespace fs = boost::filesystem;
 void textWorld::tests() {
 	//executeBootstrap(false);
 	PhysicalCreature *norn = newNorn();
+	assert(norn);
 
 	norn->consoleOutput();
 
@@ -39,23 +42,42 @@ void textWorld::tests() {
 
 	norn->consoleOutput();
 
-/*
-	int ch = 0, x = 5, y = 5;
+	wattron(console->activeWin(), COLOR_PAIR(2));
+
+	int ch = 0, x = 5, y = 5; int state = 1;
     while ( (ch = getch()) != 'q' ) {
-    	mvprintw(x, y, " ");
+    	//mvprintw(y, x, " ");
+    	norn->tick();
 
     	if(ch == KEY_LEFT)
-    		y--;
+    		x--;
     	if(ch == KEY_RIGHT)
-    	    y++;
-    	if(ch == KEY_UP)
-    	    x--;
-    	if(ch == KEY_DOWN)
     	    x++;
+    	if(ch == KEY_UP)
+    	    y--;
+    	if(ch == KEY_DOWN)
+    	    y++;
 
-    	mvprintw(x, y, "X");
-    	refresh();
-    }*/
+    	if(ch == KEY_F(1)) {
+    	   	console->switchWin(1);
+    	   	state = 1;
+    	}
+    	if(ch == KEY_F(2)) {
+    		console->switchWin(2);
+    		state = 2;
+    	}
+    	if(ch == KEY_F(3)) {
+    		console->switchWin(3);
+    		state = 3;
+    	}
+
+    	if(state != 2)
+    		mvwprintw(console->activeWin(), y, x, "X");
+    	else
+    		console->drawNornChemicalsWindow(console->activeWin(), norn->getCreature());
+
+    	wrefresh(console->activeWin());
+    }
 
     //mvprintw(5,5,"%d\n", data_directories.size());
     //refresh();
@@ -64,10 +86,8 @@ void textWorld::tests() {
 }
 
 textWorld::textWorld() {
-	//console = new textWindow();
-	//console->initColors();
-
-	data_directories;
+	console = new textWindow();
+	console->initColors();
 
 	// read directories of current path as working directories
 	fs::path p(boost::filesystem::current_path());
@@ -81,14 +101,13 @@ textWorld::textWorld() {
 }
 
 textWorld::~textWorld() {
-	//delete console;
+	delete console;
 }
 
 shared_ptr<genomeFile> textWorld::loadGenome(std::string &genefile) {
 	std::vector<std::string> possibles = findFiles("/Genetics/", genefile + ".gen");
 	if (possibles.empty()) return shared_ptr<genomeFile>();
 	genefile = possibles[(int)((float)possibles.size() * (rand() / (RAND_MAX + 1.0)))];
-	printf("loaded genome: %s\n", genefile.c_str());
 
 	shared_ptr<genomeFile> p(new genomeFile());
 	std::ifstream gfile(genefile.c_str(), std::ios::binary);
@@ -150,7 +169,7 @@ void textWorld::executeBootstrap(bool switcher) {
 			// iterate through each bootstrap directory
 			for (fs::directory_iterator d(b); d != fsend; ++d) {
 				if (fs::exists(*d) && fs::is_directory(*d)) {
-					std::string s = d->path().leaf().string();
+					std::string s = d->path().leaf();	// XXX: .string() removed
 					// TODO: cvillage has switcher code in 'Startup', so i included it here too
 					if (s == "000 Switcher" || s == "Startup") {
 						if (!switcher) continue;
@@ -187,6 +206,18 @@ void textWorld::executeBootstrap(fs::path p) {
 	for (std::vector<fs::path>::iterator i = scripts.begin(); i != scripts.end(); i++)
 		//executeInitScript(*i);
 		;
+}
+
+void textWorld::initCatalogue() {
+	assert(data_directories.size() > 0);
+	for (std::vector<fs::path>::iterator i = data_directories.begin(); i != data_directories.end(); i++) {
+		assert(fs::exists(*i));
+		assert(fs::is_directory(*i));
+
+		fs::path c(*i / "/Catalogue/");
+		if (fs::exists(c) && fs::is_directory(c))
+			catalogue.initFrom(c);
+	}
 }
 
 PhysicalCreature* textWorld::newNorn() {
