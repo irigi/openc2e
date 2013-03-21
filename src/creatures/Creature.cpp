@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include "openc2e.h"
 
-const bool debug = true;
+const bool debug = false;
 
 Creature::Creature(shared_ptr<genomeFile> g, bool is_female, unsigned char _variant, CreatureAgent *a) {
 	assert(g);

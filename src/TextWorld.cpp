@@ -29,6 +29,20 @@
 #include <boost/filesystem/convenience.hpp>
 namespace fs = boost::filesystem;
 
+#include <unistd.h>  /* only for sleep() */
+
+int kbhit(void)
+{
+    int ch = getch();
+
+    if (ch != ERR) {
+        ungetch(ch);
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 
 void textWorld::tests() {
 	//executeBootstrap(false);
@@ -44,37 +58,49 @@ void textWorld::tests() {
 
 	wattron(console->activeWin(), COLOR_PAIR(2));
 
-	int ch = 0, x = 5, y = 5; int state = 1;
-    while ( (ch = getch()) != 'q' ) {
+	int ch = 0, x = 5, y = 5; int state = 1; long int n = 0;
+    while ( true ) {
     	//mvprintw(y, x, " ");
-    	norn->tick();
 
-    	if(ch == KEY_LEFT)
-    		x--;
-    	if(ch == KEY_RIGHT)
-    	    x++;
-    	if(ch == KEY_UP)
-    	    y--;
-    	if(ch == KEY_DOWN)
-    	    y++;
+    	n++;
 
-    	if(ch == KEY_F(1)) {
-    	   	console->switchWin(1);
-    	   	state = 1;
-    	}
-    	if(ch == KEY_F(2)) {
-    		console->switchWin(2);
-    		state = 2;
-    	}
-    	if(ch == KEY_F(3)) {
-    		console->switchWin(3);
-    		state = 3;
+    	if(n % 100 == 0)
+    		norn->tick();
+
+    	if(kbhit()) {
+    		ch = getch();
+
+    		if(ch == 'q')
+    		    break;
+    		if(ch == KEY_LEFT)
+    			x--;
+    		if(ch == KEY_RIGHT)
+    			x++;
+    		if(ch == KEY_UP)
+    			y--;
+    		if(ch == KEY_DOWN)
+    			y++;
+
+    		if(ch == KEY_F(1)) {
+    			console->switchWin(1);
+    			state = 1;
+    		}
+    		if(ch == KEY_F(2)) {
+    			console->switchWin(2);
+    			state = 2;
+    		}
+    		if(ch == KEY_F(3)) {
+    			console->switchWin(3);
+    			state = 3;
+    		}
     	}
 
-    	if(state != 2)
+    	if(state != 2) {
     		mvwprintw(console->activeWin(), y, x, "X");
-    	else
-    		console->drawNornChemicalsWindow(console->activeWin(), norn->getCreature());
+    	} else {
+    		if(n % 100 == 0)
+    			console->drawNornChemicalsWindow(console->activeWin(), norn->getCreature());
+    	}
 
     	wrefresh(console->activeWin());
     }

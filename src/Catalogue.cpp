@@ -105,9 +105,7 @@ std::istream &operator >> (std::istream &s, Catalogue &c) {
 	Catalogue::yyinit(buf.c_str());
 	parsing_cat = &c;
 			
-	std::cout << "C" << std::endl;
 	cataparse();
-	std::cout << "D" << std::endl;
 
 	return s;
 }

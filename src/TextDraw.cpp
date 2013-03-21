@@ -55,7 +55,10 @@ textWindow::textWindow() {
     activewin = F1win;
     noecho();
     keypad(mainwin, TRUE);
-    //raw(); /* ctrl-C is not interpreted etc */
+    cbreak(); //raw(); /* ctrl-C is not interpreted etc */
+    nodelay(stdscr, TRUE);
+    scrollok(stdscr, TRUE);
+
     oldcur = curs_set(0);
 }
 
