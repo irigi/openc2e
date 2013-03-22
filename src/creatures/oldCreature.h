@@ -127,8 +127,9 @@ public:
 	void drawNornReceptorWindow(WINDOW * win, int &pos) {};
 	void drawNornReactionWindow(WINDOW * win, int &pos) {};
 	void drawNornDrivesWindow(WINDOW * win, int &pos) {};
-	void drawNornSensesWindow(WINDOW * win, int &pos) {};
-	void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
+	void drawNornBrainWindow(WINDOW * win, int &pos,
+			unsigned int neuron_var, unsigned int dendrite_var, float threshold,
+			int lobe) {};
 };
 
 // c2
@@ -241,8 +242,9 @@ public:
 	void drawNornReceptorWindow(WINDOW * win, int &pos) {};
 	void drawNornReactionWindow(WINDOW * win, int &pos) {};
 	void drawNornDrivesWindow(WINDOW * win, int &pos) {};
-	void drawNornSensesWindow(WINDOW * win, int &pos) {};
-	void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
+	void drawNornBrainWindow(WINDOW * win, int &pos,
+			unsigned int neuron_var, unsigned int dendrite_var, float threshold,
+			int lobe) {};
 };
 
 #endif

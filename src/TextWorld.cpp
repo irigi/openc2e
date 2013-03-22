@@ -110,7 +110,7 @@ void textWorld::tests() {
     			state = 6;
     			break;
     		case KEY_F(7):
-				console->switchWin(4);
+				console->switchWin(2);
     			state = 7;
     			break;
     		case KEY_F(8):
@@ -138,16 +138,20 @@ void textWorld::tests() {
     	}
 
     	if(n % game_speed == 0 && state == 3) {
-    		norn->getCreature()->drawNornEmitterWindow(console->activeWin(), y);
+    		norn->getCreature()->drawNornEmitterWindow(console->activeWin(), x);
     	}
     	if(n % game_speed == 0 && state == 4) {
-    		norn->getCreature()->drawNornReceptorWindow(console->activeWin(), y);
+    		norn->getCreature()->drawNornReceptorWindow(console->activeWin(), x);
     	}
     	if(n % game_speed == 0 && state == 5) {
     		norn->getCreature()->drawNornReactionWindow(console->activeWin(), x);
     	}
     	if(n % game_speed == 0 && state == 6) {
     		norn->getCreature()->drawNornDrivesWindow(console->activeWin(), x);
+    	}
+    	if(n % game_speed == 0 && state == 7) {
+    	    norn->getCreature()->drawNornBrainWindow(console->activeWin(), x,
+    	    		1, 1, 0.1, y);
     	}
 
 

@@ -120,8 +120,9 @@ public:
 	virtual void drawNornReceptorWindow(WINDOW * win, int &pos) {};
 	virtual void drawNornReactionWindow(WINDOW * win, int &pos) {};
 	virtual void drawNornDrivesWindow(WINDOW * win, int &pos) {};
-	virtual void drawNornSensesWindow(WINDOW * win, int &pos) {};
-	virtual void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
+	virtual void drawNornBrainWindow(WINDOW * win, int &pos,
+			unsigned int neuron_var, unsigned int dendrite_var, float threshold,
+			int lobe) {};
 
 	void born();
 	void die();
