@@ -50,7 +50,8 @@ textWindow::textWindow() {
 
     F1win = create_newwin(LINES,COLS,0,0);
     F2win = create_newwin(LINES,COLS,0,0);
-    F3win = create_newwin(LINES,COLS,0,0);
+    F3win1 = create_newwin(LINES,COLS,0,0);
+    F3win2 = create_newwin(LINES,COLS/2,0,COLS/2);
 
     activewin = F1win;
     noecho();
@@ -66,7 +67,8 @@ textWindow::~textWindow() {
     delwin(mainwin);
     delwin(F1win);
     delwin(F2win);
-    delwin(F3win);
+    delwin(F3win1);
+    delwin(F3win2);
     endwin();
     refresh();
 }
@@ -76,16 +78,25 @@ void textWindow::switchWin(int no) {
 	case 1:
 		activewin = F1win;
 		touchwin(activewin);
+		resetActiveWin();
 		redrawwin(activewin);
 		break;
 	case 2:
 		activewin = F2win;
 		touchwin(activewin);
+		resetActiveWin();
 		redrawwin(activewin);
 		break;
 	case 3:
-		activewin = F3win;
+		activewin = F3win1;
 		touchwin(activewin);
+		resetActiveWin();
+		redrawwin(activewin);
+		break;
+	case 4:
+		activewin = F3win2;
+		touchwin(activewin);
+		resetActiveWin();
 		redrawwin(activewin);
 		break;
 	}
@@ -96,29 +107,17 @@ WINDOW * textWindow::activeWin() {
 	return activewin;
 }
 
-void textWindow::drawNornChemicalsWindow(WINDOW * win, Creature * norn) {
-	if (!catalogue.hasTag("chemical_names"))
-		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
-	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
-
-
-	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
-	mvwprintw(win, 3, 2, "Chemical levels: ");
-	wattroff(win, A_BOLD | A_UNDERLINE);
-
-	int k = -1; const int wrap = 35, spac = 25;
-	for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++) {
-		if(k > 256 || k < 0 || 2 + (k/wrap)*spac > COLS) {
-			k++;
-			continue;
+void textWindow::resetActiveWin() {
+	for(int i = 0; i < this->activeWin()->_maxx; i++) {
+		for(int j = 0; j < this->activeWin()->_maxy; j++) {
+			mvwprintw(activeWin(), j, i, " ");
 		}
-
-		mvwprintw(win, 5 + k % wrap, 2 + (k/wrap)*spac,
-				"%3d %s", int(round(100*norn->getFloatChemical(k+1))), i->c_str());
-
-		k++;
 	}
+
+	box(this->activeWin(), 0 , 0);
+	redrawwin(activewin);
 }
+
 
 void textWindow::initColors() {
     start_color();

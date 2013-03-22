@@ -24,10 +24,17 @@
 #include "genome.h"
 
 #include <deque>
+#include <ncurses.h>
 
 class IrigiAgent;
 class CreatureAgent;
 class Creature;
+
+enum ChemicalsByNumber {
+	CHEM_ATP = 35,
+	CHEM_ADP = 36,
+	CHEM_INJURY = 127
+};
 
 namespace boost {
 	template <typename T> class shared_ptr;
@@ -107,8 +114,15 @@ public:
 	int getDecisionId() { return decn; }
 
 	virtual unsigned int getGait() = 0;
-	virtual float getFloatChemical(unsigned char k) { return 0; };
 	
+	virtual void drawNornChemicalsWindow(WINDOW * win) {};
+	virtual void drawNornEmitterWindow(WINDOW * win, int &pos) {};
+	virtual void drawNornReceptorWindow(WINDOW * win, int &pos) {};
+	virtual void drawNornReactionWindow(WINDOW * win, int &pos) {};
+	virtual void drawNornDrivesWindow(WINDOW * win, int &pos) {};
+	virtual void drawNornSensesWindow(WINDOW * win, int &pos) {};
+	virtual void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
+
 	void born();
 	void die();
 	

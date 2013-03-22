@@ -122,6 +122,13 @@ public:
 	unsigned int getGait();
 
 	void consoleOutput();
+	void drawNornChemicalsWindow(WINDOW * win) {};
+	void drawNornEmitterWindow(WINDOW * win, int &pos) {};
+	void drawNornReceptorWindow(WINDOW * win, int &pos) {};
+	void drawNornReactionWindow(WINDOW * win, int &pos) {};
+	void drawNornDrivesWindow(WINDOW * win, int &pos) {};
+	void drawNornSensesWindow(WINDOW * win, int &pos) {};
+	void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
 };
 
 // c2
@@ -229,6 +236,13 @@ public:
 	unsigned int getGait();
 
 	void consoleOutput();
+	void drawNornChemicalsWindow(WINDOW * win) {};
+	void drawNornEmitterWindow(WINDOW * win, int &pos) {};
+	void drawNornReceptorWindow(WINDOW * win, int &pos) {};
+	void drawNornReactionWindow(WINDOW * win, int &pos) {};
+	void drawNornDrivesWindow(WINDOW * win, int &pos) {};
+	void drawNornSensesWindow(WINDOW * win, int &pos) {};
+	void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
 };
 
 #endif

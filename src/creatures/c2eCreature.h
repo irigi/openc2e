@@ -96,7 +96,12 @@ public:
 	unsigned int getReceptorCount() { return receptors.size(); }
 	unsigned int getEmitterCount() { return emitters.size(); }
 	unsigned int getReactionCount() { return reactions.size(); }
-	
+
+	const c2eEmitter getEmitter(unsigned int i) { assert(i < emitters.size()); return emitters[i]; }
+	const c2eReceptor getReceptor(unsigned int i) { assert(i < receptors.size()); return receptors[i]; }
+	const boost::shared_ptr<c2eReaction> getReaction(unsigned int i) { assert(i < reactions.size()); return reactions[i]; }
+
+	std::string getLocusDescription(bool receptor, unsigned char o, unsigned char t, unsigned char l);
 	void applyInjury(float);
 };
 
@@ -154,7 +159,6 @@ public:
 
 	void adjustChemical(unsigned char id, float value);
 	float getChemical(unsigned char id) { return chemicals[id]; }
-	float getFloatChemical(unsigned char k) { return getChemical(k); };
 	void adjustDrive(unsigned int id, float value);
 	float getDrive(unsigned int id) { assert(id < 20); return drives[id]; }
 
@@ -169,10 +173,19 @@ public:
 	class c2eBrain *getBrain() { return brain; }
 
 	float *getLocusPointer(bool receptor, unsigned char o, unsigned char t, unsigned char l);
+	std::string getLocusDescription(bool receptor, unsigned char o, unsigned char t, unsigned char l);
 	
 	unsigned int getGait();
 
 	void consoleOutput();
+
+	void drawNornChemicalsWindow(WINDOW * win);
+	void drawNornEmitterWindow(WINDOW * win, int &pos);
+	void drawNornReceptorWindow(WINDOW * win, int &pos);
+	void drawNornReactionWindow(WINDOW * win, int &pos);
+	void drawNornDrivesWindow(WINDOW * win, int &pos);
+	void drawNornSensesWindow(WINDOW * win, int &pos) {};
+	void drawNornFloatingLociWindow(WINDOW * win, int &pos) {};
 };
 
 #endif

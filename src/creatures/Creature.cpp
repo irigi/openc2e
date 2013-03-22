@@ -498,12 +498,227 @@ void c2eCreature::consoleOutput() {
 	printf("\n");
 }
 
-void c2Creature::consoleOutput() {
+void c2Creature::consoleOutput() {}
 
+void c1Creature::consoleOutput() {}
+
+
+void c2eCreature::drawNornChemicalsWindow(WINDOW * win) {
+	if (!catalogue.hasTag("chemical_names"))
+		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
+
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2, "Chemical levels:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	int k = -1; const int wrap = 35, spac = 25;
+	for (std::vector<std::string>::const_iterator i = mappinginfotag.begin(); i != mappinginfotag.end(); i++) {
+		if(k > 256 || k < 0 || 2 + (k/wrap)*spac > COLS) {
+			k++;
+			continue;
+		}
+
+		mvwprintw(win, 5 + k % wrap, 2 + (k/wrap)*spac,
+				"%3d %s", int(round(100*getChemical(k+1))), i->c_str());
+
+		k++;
+	}
 }
 
-void c1Creature::consoleOutput() {
+void c2eCreature::drawNornEmitterWindow(WINDOW * win, int &pos) {
+	if (!catalogue.hasTag("chemical_names"))
+		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
 
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2, "Emitters:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	int organs = noOrgans();
+	const int wrap = 30, spac = 25;
+
+	int emitterCount = 0;
+	for(int i = 0; i < organs; i++) {
+		emitterCount += getOrgan(i)->getEmitterCount();
+	}
+
+	if(pos >= emitterCount - wrap) pos = emitterCount - wrap;
+	if(pos < 0) pos = 0;
+
+	int k = 0;
+	for(int i = 0; i < organs; i++) {
+		boost::shared_ptr<c2eOrgan>  organ = getOrgan(i);
+		int emitters = organ->getEmitterCount();
+		for(int j = 0; j < emitters; j++) {
+			if(k > 256 || k < 0 || ((k - pos)/wrap)*spac >= 1 || k - int(pos) < 0) {
+				k++;
+				continue;
+			}
+
+			assert(organ->getEmitter(j).data);
+			assert(organ->getEmitter(j).locus);
+			assert((*organ->getEmitter(j).data).chemical < mappinginfotag.size() );
+
+			mvwprintw(win, 5 + (k-pos) % wrap, 2 + ((k-pos)/wrap)*spac,
+				"%25s O%02d (%3d %2d-%2d-%2d %3f)",
+				mappinginfotag.at(int((*organ->getEmitter(j).data).chemical)).c_str(),
+				i,
+				(*organ->getEmitter(j).data).threshold,
+				(*organ->getEmitter(j).data).organ,
+				(*organ->getEmitter(j).data).tissue,
+				(*organ->getEmitter(j).data).locus,
+				*organ->getEmitter(j).locus);
+
+			k++;
+		}
+	}
+}
+
+void c2eCreature::drawNornReceptorWindow(WINDOW * win, int &pos) {
+	if (!catalogue.hasTag("chemical_names"))
+		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2, "Receptors:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	int organs = noOrgans();
+	const int wrap = 30, spac = 25;
+
+	int receptorCount = 0;
+	for(int i = 0; i < organs; i++) {
+		receptorCount += getOrgan(i)->getReceptorCount();
+	}
+
+	if(pos >= receptorCount - wrap) pos = receptorCount - wrap;
+	if(pos < 0) pos = 0;
+
+	int k = 0;
+	for(int i = 0; i < organs; i++) {
+		boost::shared_ptr<c2eOrgan>  organ = getOrgan(i);
+		int receptors = organ->getReceptorCount();
+		for(int j = 0; j < receptors; j++) {
+			if(k > 256 || k < 0 || ((k - pos)/wrap)*spac >= 1 || k - int(pos) < 0) {
+				k++;
+				continue;
+			}
+
+			assert(organ->getReceptor(j).data);
+			assert(organ->getReceptor(j).locus);
+			assert((*organ->getReceptor(j).data).chemical < mappinginfotag.size() );
+
+			mvwprintw(win, 5 + (k-pos) % wrap, 2 + ((k-pos)/wrap)*spac,
+				"%25s O%02d %3d %25s %3f",
+				mappinginfotag.at(int((*organ->getReceptor(j).data).chemical)).c_str(),
+				i,
+				(*organ->getReceptor(j).data).threshold,
+				organ->getLocusDescription(true,
+				(*organ->getReceptor(j).data).organ,
+				(*organ->getReceptor(j).data).tissue,
+				(*organ->getReceptor(j).data).locus).c_str(),
+				*organ->getReceptor(j).locus);
+
+			k++;
+		}
+	}
+}
+
+void c2eCreature::drawNornReactionWindow(WINDOW * win, int &pos) {
+	if (!catalogue.hasTag("chemical_names"))
+		throw creaturesException("c2eCreature was unable to read the 'chemical_names' catalogue tag");
+	const std::vector<std::string> &mappinginfotag = catalogue.getTag("chemical_names");
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2, "Reactions:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	int organs = noOrgans();
+	const int wrap = 30, spac = 25;
+
+	int reactionsCount = 0;
+	for(int i = 0; i < organs; i++) {
+		reactionsCount += getOrgan(i)->getReactionCount();
+	}
+
+	if(pos >= reactionsCount - wrap) pos = reactionsCount - wrap;
+	if(pos < 0) pos = 0;
+
+	int k = 0;
+	for(int i = 0; i < organs; i++) {
+		boost::shared_ptr<c2eOrgan>  organ = getOrgan(i);
+		int reactions = organ->getReactionCount();
+		for(int j = 0; j < reactions; j++) {
+			if(k > 256 || k < 0 || ((k - pos)/wrap)*spac >= 1 || k - int(pos) < 0) {
+				k++;
+				continue;
+			}
+
+			assert(organ->getReaction(j).get()->data);
+			assert((*organ->getReaction(j).get()->data).reactant[0] < mappinginfotag.size() );
+			assert((*organ->getReaction(j).get()->data).reactant[1] < mappinginfotag.size() );
+			assert((*organ->getReaction(j).get()->data).reactant[2] < mappinginfotag.size() );
+			assert((*organ->getReaction(j).get()->data).reactant[3] < mappinginfotag.size() );
+
+			mvwprintw(win, 5 + (k-pos) % wrap, 2 + ((k-pos)/wrap)*spac,
+				"%d %s + %d %s -> %d %s + %d %s",
+				(*organ->getReaction(j).get()->data).quantity[0],
+				mappinginfotag.at(int((*organ->getReaction(j)->data).reactant[0])).c_str(),
+				(*organ->getReaction(j).get()->data).quantity[1],
+				mappinginfotag.at(int((*organ->getReaction(j)->data).reactant[1])).c_str(),
+				(*organ->getReaction(j).get()->data).quantity[2],
+				mappinginfotag.at(int((*organ->getReaction(j)->data).reactant[2])).c_str(),
+				(*organ->getReaction(j).get()->data).quantity[3],
+				mappinginfotag.at(int((*organ->getReaction(j)->data).reactant[3])).c_str() );
+			wprintw(win, "                                ");
+
+			k++;
+		}
+	}
+	box(win, 0, 0);
+}
+
+void c2eCreature::drawNornDrivesWindow(WINDOW * win, int &pos) {
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2, "Drives:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	const int wrap = 33, spac = 25;
+
+	for(int i = 0; i < 20; i++) {
+		mvwprintw(win, 5 + i % wrap, 2,
+						"Drive %2d: %.3f", i, drives[i] );
+	}
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, spac+2, "Senses:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	for(int i = 0; i < 14; i++) {
+		mvwprintw(win, 5 + i % wrap, spac+2,
+						"Sense %2d: %.3f", i, senses[i] );
+	}
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3+20, spac+2, "Gait Loci:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	for(int i = 0; i < 16; i++) {
+		mvwprintw(win, 5 + 20 + i % wrap, spac+2,
+						"Gait %2d: %.3f", i, gaitloci[i] );
+	}
+
+	wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+	mvwprintw(win, 3, 2*spac+2, "Floating loci:");
+	wattroff(win, A_BOLD | A_UNDERLINE);
+
+	for(int i = 0; i < 32; i++) {
+		mvwprintw(win, 5 + i % wrap, 2*spac+2,
+						"Fl. loc. %2d: %.3f", i, floatingloci[i] );
+	}
+	box(win, 0, 0);
 }
 
 /* vim: set noet: */

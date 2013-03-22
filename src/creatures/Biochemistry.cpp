@@ -397,6 +397,87 @@ float *c2eCreature::getLocusPointer(bool receptor, unsigned char o, unsigned cha
 		<< std::endl;
 	return 0;
 }
+
+std::string c2eCreature::getLocusDescription(bool receptor, unsigned char o, unsigned char t, unsigned char l) {
+	std::ostringstream ret;
+
+	switch (o) {
+		case 0: // brain
+			{
+			c2eLobe *lobe = brain->getLobeByTissue(t);
+			if (!lobe) break;
+
+			unsigned int neuronid = o/3, stateno = o%3;
+			if (neuronid >= lobe->getNoNeurons()) break;
+
+			ret << "lobe " << int(t) << ", neu " <<  neuronid << ", var " << stateno;
+			//ret += "lobe "; ret += + t; ret += ", neu ";  ret += neuronid;
+			//ret += ", var ";  ret += stateno;
+			return ret.str();
+			}
+
+		case 1: // creature
+			switch (t) {
+				case 0: // somatic
+					if (receptor) {
+						if (l > 6) break;
+						ret << "lifestage loci " << int(l);
+						return  ret.str();
+					} else if (l == 0) { ret << "muscle energy"; return ret.str(); }
+					break;
+
+				case 1: // circulatory
+					if (l > 31) break;
+					ret << "floating loci " << int(l);
+					return  ret.str();
+
+				case 2: // reproductive
+					{ int val = l;
+
+					if (!receptor) { // emitter
+						if (l == 0) return "fertile";
+						else if (l == 1) return "pregnant";
+						val = l - 2;
+					}
+
+					switch (val) {
+						case 0: return "ovulate";
+						case 1: return "receptive";
+						case 2: return "chance of mutation";
+						case 3: return "degree of mutation";
+					} }
+					break;
+
+				case 3: // immune
+					if (l == 0) return "dead";
+					break;
+
+				case 4: // sensorimotor
+					{ int val = l;
+
+					if (!receptor) { // emitter
+						if (val < 14) { ret << "sense " << val; return ret.str(); }
+						val -= 14;
+					}
+					if (val < 8) { ret << "involaction " << val; return ret.str(); }
+					val -= 8;
+					if (val < 16) {ret << "gait loci " << val; return ret.str(); }
+					}
+					break;
+
+				case 5: // drives
+					if (l < 20) {ret << "drive " << int(l); return ret.str(); }
+					break;
+			}
+
+	}
+
+	std::cout << "c2eCreature::getLocusPointer failed to interpret locus (" << (int)o << ", "
+		<< (int)t << ", " << (int)l << ") of " << (receptor ? "receptor" : "emitter")
+		<< std::endl;
+	return 0;
+}
+
  
 /*****************************************************************************/
 
@@ -566,13 +647,13 @@ void c2eOrgan::tick() {
 		biotick -= 1.0f;
 
 		// *** energy consumption
-		// chem 35 = ATP, chem 36 = ADP (TODO: fix hardcoding)
-		float atplevel = parent->getChemical(35);
+		// chem 35 = ATP, chem 36 = ADP
+		float atplevel = parent->getChemical(CHEM_ATP);
 		bool hadenergy = false;
 		if (atplevel >= energycost) {
 			hadenergy = true;
-			parent->adjustChemical(35, -energycost);
-			parent->adjustChemical(36, energycost);
+			parent->adjustChemical(CHEM_ATP, -energycost);
+			parent->adjustChemical(CHEM_ADP, energycost);
 			
 			// *** tick emitters
 			for (vector<c2eEmitter>::iterator i = emitters.begin(); i != emitters.end(); i++)
@@ -594,8 +675,8 @@ void c2eOrgan::tick() {
 		// TODO: doesn't this mean STLF could go above LTLF?
 		float repair = diff * repairrate; // repairrate always <= 1.00
 		shorttermlifeforce += repair;
-		// adjust Injury chemical (TODO: de-hardcode)
-		parent->adjustChemical(127, -repair / lifeforce);
+		// adjust Injury chemical
+		parent->adjustChemical(CHEM_INJURY, -repair / lifeforce);
 
 		if (injurytoapply)
 			applyInjury(injurytoapply);
@@ -800,6 +881,7 @@ void c2eOrgan::processEmitter(c2eEmitter &d) {
 	if (g.clear) *d.locus = 0.0f;
 	if (g.invert) f = 1.0f - f;
 
+	// release chemical into bloodstream if above defined threshold
 	if (g.digital) {
 		if (f < d.threshold) return;
 		parent->adjustChemical(g.chemical, d.gain);
@@ -983,6 +1065,37 @@ float *c2eOrgan::getLocusPointer(bool receptor, unsigned char o, unsigned char t
 	}
 
 	return parent->getLocusPointer(receptor, o, t, l);
+}
+
+std::string c2eOrgan::getLocusDescription(bool receptor, unsigned char o, unsigned char t, unsigned char l) {
+	//if (receptors) *receptors = 0;
+
+	std::string ret = "";
+	switch (o) {
+		case 2: // organ
+			if (t == 0)
+				switch (l) {
+					case 0: // clock rate
+						return "clockrate";
+					case 1: // repair rate
+						return "repairrate";
+					case 2: // injury to apply
+						return "injurytoapply";
+				}
+			break;
+		case 3: // reaction
+			if (t == 0 && l == 0) { // reaction rate
+				shared_ptr<c2eReaction> r = reactions.back();
+				if (!r) {
+					std::cout << "c2eOrgan::getLocusPointer failed to find a reaction" << std::endl;
+					return 0;
+				} else {
+					return "last reaction rate";
+				}
+			}
+	}
+
+	return parent->getLocusDescription(receptor, o, t, l);
 }
 
 void c1Reaction::init(bioReactionGene *g) {

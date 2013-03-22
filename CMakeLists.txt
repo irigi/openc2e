@@ -26,9 +26,9 @@ ENDIF (OPENC2E_USE_OPENAL MATCHES "^(YES|NO|AUTO)$")
 SET(OPENC2E_USE_SERIALIZATION "FALSE" CACHE BOOL "Build the experimental serialization code")
 MARK_AS_ADVANCED(FORCE OPENC2E_USE_SERIALIZATION)
 IF (OPENC2E_USE_SERIALIZATION)
-#	SET(SER_SRCS src/caos/caosVM_ser_real.cpp)
+	SET(SER_SRCS src/caos/caosVM_ser_real.cpp)
 ELSE (OPENC2E_USE_SERIALIZATION)
-#	SET(SER_SRCS src/caos/caosVM_ser_stub.cpp)
+	SET(SER_SRCS src/caos/caosVM_ser_stub.cpp)
 ENDIF (OPENC2E_USE_SERIALIZATION)
 
 SET(OPENC2E_PROFILE_ALLOCATION "FALSE" CACHE BOOL "Collect allocation profile stats for DBG: SIZO")
@@ -150,7 +150,7 @@ SET(OPENC2E_QT
 #	src/backends/qtgui/CreatureGrapher.cpp
 #	src/backends/qtgui/ChemicalSelector.cpp
 #	src/backends/qtgui/Hatchery.cpp
-#	src/tools/braininavat/brainview.cpp
+	src/tools/braininavat/brainview.cpp
 )
 
 SET(OPENC2E_QT_MOC_HDRS
@@ -163,11 +163,11 @@ SET(OPENC2E_QT_MOC_HDRS
 #	src/backends/qtgui/CreatureGrapher.h
 #	src/backends/qtgui/ChemicalSelector.h
 #	src/backends/qtgui/Hatchery.h
-#	src/tools/braininavat/brainview.h
+	src/tools/braininavat/brainview.h
 )
 
 SET(OPENC2E_QT_UIS
-#	src/backends/qtgui/agents.ui
+	src/backends/qtgui/agents.ui
 )
 # 
 
@@ -193,17 +193,17 @@ IF(HAVE_STDINT_H)
 ELSE(HAVE_STDINT_H)
 ENDIF(HAVE_STDINT_H)
 
-#FIND_PACKAGE(SDL REQUIRED)
-#FIND_PACKAGE(SDL_mixer)
-#FIND_PACKAGE(SDL_net REQUIRED)
-#FIND_PACKAGE(SDL_gfx REQUIRED)
-#FIND_PACKAGE(SDL_ttf REQUIRED)
-#IF(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
-#	FIND_PACKAGE(OpenAL)
-#ELSE(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
-#	SET(OPENAL_FOUND "NO")
-#ENDIF(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
-#FIND_PACKAGE(ALUT)
+FIND_PACKAGE(SDL REQUIRED)
+FIND_PACKAGE(SDL_mixer)
+FIND_PACKAGE(SDL_net REQUIRED)
+FIND_PACKAGE(SDL_gfx REQUIRED)
+FIND_PACKAGE(SDL_ttf REQUIRED)
+IF(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
+	FIND_PACKAGE(OpenAL)
+ELSE(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
+	SET(OPENAL_FOUND "NO")
+ENDIF(OPENC2E_USE_OPENAL MATCHES "^(YES|AUTO)$")
+FIND_PACKAGE(ALUT)
 
 FIND_PACKAGE(Boost 1.42.0 COMPONENTS program_options filesystem thread regex serialization REQUIRED)
 FIND_LIBRARY(BOOST_SYSTEM_LIBRARY NAMES boost_system-mt)
@@ -231,13 +231,13 @@ IF(USE_OPENAL STREQUAL "NO")
     SET(OPENAL_SRC "")
     SET(OPENAL_DEF "")
 ELSE(USE_OPENAL STREQUAL "NO")
-#    SET(OPENAL_SRC "src/backends/OpenALBackend.cpp")
-#    SET(OPENAL_DEF "-DOPENAL_SUPPORT")
+    SET(OPENAL_SRC "src/backends/OpenALBackend.cpp")
+    SET(OPENAL_DEF "-DOPENAL_SUPPORT")
 ENDIF(USE_OPENAL STREQUAL "NO")
 
 IF(SDLMIXER_FOUND)
-#    SET(SDLMIXER_SRC "src/backends/SDLMixerBackend.cpp")
-#    SET(SDLMIXER_DEF "-DSDLMIXER_SUPPORT")
+    SET(SDLMIXER_SRC "src/backends/SDLMixerBackend.cpp")
+    SET(SDLMIXER_DEF "-DSDLMIXER_SUPPORT")
 ELSE(SDLMIXER_FOUND)
     SET(SDLMIXER_INCLUDE_DIR "")
     SET(SDLMIXER_LIBRARY "")

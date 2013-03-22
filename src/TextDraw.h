@@ -30,6 +30,7 @@ public:
 	static char * intprtkey(int ch);
 	void switchWin(int no);
 	WINDOW * activeWin();
+	void resetActiveWin();
 
 	void drawNornChemicalsWindow(WINDOW * win, Creature * norn);
 
@@ -37,7 +38,7 @@ private:
 	WINDOW * mainwin;
 	WINDOW * F1win;
 	WINDOW * F2win;
-	WINDOW * F3win;
+	WINDOW * F3win1, * F3win2;
 	WINDOW * activewin;
 	int oldcur;
 

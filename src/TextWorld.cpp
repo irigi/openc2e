@@ -58,48 +58,101 @@ void textWorld::tests() {
 
 	wattron(console->activeWin(), COLOR_PAIR(2));
 
-	int ch = 0, x = 5, y = 5; int state = 1; long int n = 0;
+	int ch = 0, x = 5, y = 5;
+	int state = 1;
+	long int n = 0, game_speed = 10000;
     while ( true ) {
     	//mvprintw(y, x, " ");
 
     	n++;
-
-    	if(n % 100 == 0)
-    		norn->tick();
 
     	if(kbhit()) {
     		ch = getch();
 
     		if(ch == 'q')
     		    break;
-    		if(ch == KEY_LEFT)
-    			x--;
-    		if(ch == KEY_RIGHT)
-    			x++;
-    		if(ch == KEY_UP)
-    			y--;
-    		if(ch == KEY_DOWN)
-    			y++;
 
-    		if(ch == KEY_F(1)) {
+    		switch(ch) {
+    		case KEY_LEFT:
+    				x--;
+    				break;
+    		case KEY_RIGHT:
+    				x++;
+    				break;
+    		case KEY_UP:
+    				y--;
+    				break;
+    		case KEY_DOWN:
+    				y++;
+    				break;
+    		case KEY_F(1):
     			console->switchWin(1);
     			state = 1;
-    		}
-    		if(ch == KEY_F(2)) {
+    			break;
+    		case KEY_F(2):
     			console->switchWin(2);
     			state = 2;
-    		}
-    		if(ch == KEY_F(3)) {
-    			console->switchWin(3);
+    			break;
+    		case KEY_F(3):
+				console->switchWin(4);
     			state = 3;
+    			break;
+    		case KEY_F(4):
+				console->switchWin(4);
+    			state = 4;
+    			break;
+    		case KEY_F(5):
+				console->switchWin(4);
+    			state = 5;
+    			break;
+    		case KEY_F(6):
+				console->switchWin(4);
+    			state = 6;
+    			break;
+    		case KEY_F(7):
+				console->switchWin(4);
+    			state = 7;
+    			break;
+    		case KEY_F(8):
+				console->switchWin(4);
+    			state = 6;
+    			break;
+
+    		case '-' :
+    			game_speed = int(round(game_speed*1.1));
+    			break;
+    		case '+' :
+    			game_speed = int(round(game_speed*0.95));
+    			break;
+    		default:
+    			break;
     		}
     	}
 
-    	if(state != 2) {
+    	if(state == 1) {
     		mvwprintw(console->activeWin(), y, x, "X");
-    	} else {
-    		if(n % 100 == 0)
-    			console->drawNornChemicalsWindow(console->activeWin(), norn->getCreature());
+    	}
+
+    	if(n % game_speed == 0 && state == 2) {
+    		norn->getCreature()->drawNornChemicalsWindow(console->activeWin());
+    	}
+
+    	if(n % game_speed == 0 && state == 3) {
+    		norn->getCreature()->drawNornEmitterWindow(console->activeWin(), y);
+    	}
+    	if(n % game_speed == 0 && state == 4) {
+    		norn->getCreature()->drawNornReceptorWindow(console->activeWin(), y);
+    	}
+    	if(n % game_speed == 0 && state == 5) {
+    		norn->getCreature()->drawNornReactionWindow(console->activeWin(), x);
+    	}
+    	if(n % game_speed == 0 && state == 6) {
+    		norn->getCreature()->drawNornDrivesWindow(console->activeWin(), x);
+    	}
+
+
+    	if(n % game_speed == 0) {
+    		 norn->tick();
     	}
 
     	wrefresh(console->activeWin());
