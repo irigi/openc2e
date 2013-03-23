@@ -58,7 +58,7 @@ void textWorld::tests() {
 
 	wattron(console->activeWin(), COLOR_PAIR(2));
 
-	int ch = 0, x = 5, y = 5;
+	int ch = 0, cur_x = 5, cur_y = 5, cur_u = 5, cur_v = 5;
 	int state = 1;
 	long int n = 0, game_speed = 10000;
     while ( true ) {
@@ -74,17 +74,31 @@ void textWorld::tests() {
 
     		switch(ch) {
     		case KEY_LEFT:
-    				x--;
-    				break;
+    			cur_x--;
+    			break;
     		case KEY_RIGHT:
-    				x++;
-    				break;
+    			cur_x++;
+    			break;
     		case KEY_UP:
-    				y--;
-    				break;
+    			cur_y--;
+    			break;
     		case KEY_DOWN:
-    				y++;
-    				break;
+    			cur_y++;
+    			break;
+
+    		case 'a':
+    			cur_u--;
+    			break;
+    		case 'd':
+    			cur_u++;
+    			break;
+    		case 'w':
+    			cur_v--;
+    			break;
+    		case 's':
+    			cur_v++;
+    			break;
+
     		case KEY_F(1):
     			console->switchWin(1);
     			state = 1;
@@ -130,28 +144,30 @@ void textWorld::tests() {
     	}
 
     	if(state == 1) {
-    		mvwprintw(console->activeWin(), y, x, "X");
+    		mvwprintw(console->activeWin(), cur_y, cur_x, "X");
     	}
 
     	if(n % game_speed == 0 && state == 2) {
     		norn->getCreature()->drawNornChemicalsWindow(console->activeWin());
     	}
-
     	if(n % game_speed == 0 && state == 3) {
-    		norn->getCreature()->drawNornEmitterWindow(console->activeWin(), x);
+    		norn->getCreature()->drawNornEmitterWindow(console->activeWin(), cur_x);
     	}
     	if(n % game_speed == 0 && state == 4) {
-    		norn->getCreature()->drawNornReceptorWindow(console->activeWin(), x);
+    		norn->getCreature()->drawNornReceptorWindow(console->activeWin(), cur_x);
     	}
     	if(n % game_speed == 0 && state == 5) {
-    		norn->getCreature()->drawNornReactionWindow(console->activeWin(), x);
+    		norn->getCreature()->drawNornReactionWindow(console->activeWin(), cur_x);
     	}
     	if(n % game_speed == 0 && state == 6) {
-    		norn->getCreature()->drawNornDrivesWindow(console->activeWin(), x);
+    		norn->getCreature()->drawNornDrivesWindow(console->activeWin(), cur_x);
     	}
     	if(n % game_speed == 0 && state == 7) {
-    	    norn->getCreature()->drawNornBrainWindow(console->activeWin(), x,
-    	    		1, 1, 0.1, y);
+    		int tmp;
+    		console->resetActiveWin();
+    	    norn->getCreature()->drawNornBrainWindow(console->activeWin(),
+    	    		cur_x, cur_y, cur_u, cur_v,
+    	    		1, 1, 0.01, tmp);
     	}
 
 

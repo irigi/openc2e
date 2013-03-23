@@ -727,11 +727,21 @@ void c2eCreature::drawNornDrivesWindow(WINDOW * win, int &pos) {
 #include <QPainter>
 #include <QTextDocument>
 */
-void c2eCreature::drawNornBrainWindow(WINDOW *win, int &pos,
+void c2eCreature::drawNornBrainWindow(WINDOW *win, int &posx, int &posy, int &posu, int &posv,
 		unsigned int neuron_var, unsigned int dendrite_var, float threshold,
 		int lobeNumber) {
 
 	assert(win);
+
+	if(posx >= int(getBrain()->lobes.size())) posx = getBrain()->lobes.size() - 1;
+	if(posx < 0) posx = 0;
+	lobeNumber = posx;
+	std::string lobeName = "";
+
+	if(posy >= 8) posy = 7;
+	if(posy < 0) posy = 0;
+	neuron_var = posy;
+	dendrite_var = posy;
 
 	std::map<c2eNeuron *, std::pair<unsigned int, unsigned int> > neuroncoords;
 	c2eBrain * b = getBrain();
@@ -739,11 +749,7 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &pos,
 	// draw lobes/neurons
 	int lobeno = 0;
 	for (std::map<std::string, c2eLobe *>::iterator i = b->lobes.begin(); i != b->lobes.end(); i++) {
-		if(lobeno != lobeNumber) {
-			lobeno++;
-			continue;
-		}
-
+		lobeName = i->second->getId();
 		lobeno++;
 
 		c2eBrainLobeGene *lobe = i->second->getGene();
@@ -751,28 +757,53 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &pos,
 		//painter.setPen(color);
 		//drawLobeBoundaries(painter, lobe->x, lobe->y, lobe->width, lobe->height, i->first);
 
-		for (unsigned int y = 0; y < lobe->height; y++) {
-			for (unsigned int x = 0; x < lobe->width; x++) {
+		if(lobeno == lobeNumber) {
+			wattron(win, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+			mvwprintw(win, 2, 4, "%s lobe", i->second->getId().c_str());
+			wattroff(win, A_BOLD | A_UNDERLINE);
+		}
+
+		for (int y = 0; y < lobe->height; y++) {
+			for (int x = 0; x < lobe->width; x++) {
 				unsigned int neuronid = x + (y * lobe->width);
 				c2eNeuron *neuron = i->second->getNeuron(neuronid);
 
-				int lobex = (lobe->x + 4) * 20;
-				int lobey = (lobe->y + 4) * 20;
+				wattron(win, COLOR_PAIR(1));
 
 				// store the centre coordinate for drawing dendrites
 				assert(neuroncoords.find(neuron) == neuroncoords.end());
-				neuroncoords[neuron] = std::pair<unsigned int, unsigned int>(lobex + (x * 20) + 10, lobey + (y * 20) + 10);
+				neuroncoords[neuron] = std::pair<unsigned int, unsigned int>(x, y);
+
+				if(lobeno != lobeNumber)
+					continue;
+
+				// drawing part
+
+				if(posu >= int(lobe->width)) posu = lobe->width - 1;
+				if(posu < 0) posu = 0;
+
+				if(posv >= int(lobe->height)) posv = lobe->height - 1;
+				if(posv < 0) posv = 0;
 
 				// always highlight spare neuron
 				if (i->second->getSpareNeuron() == neuronid) {
 					// TODO: don't hardcode these names?
 					if (i->second->getId() == "attn" || i->second->getId() == "decn" || i->second->getId() == "comb") {
-						//painter.setPen(color);
-						//painter.drawRect(lobex + (x * 20) + 5, lobey + (y * 20) + 5, 10, 10);
+
+						wattron(win, COLOR_PAIR(5));
 					}
 				}
 
 				mvwprintw(win, 4+y*2, 4+x*2, ".");
+				wattron(win, COLOR_PAIR(1));
+
+				// highlight the selected neuron
+				if(posu == x && posv == y) {
+					wattron(win, COLOR_PAIR(3));
+					mvwprintw(win, 4+y*2, 4+x*2, "X");
+					wattron(win, COLOR_PAIR(1));
+					continue;
+				}
 
 				// if below threshold, don't draw
 				float var = neuron->variables[neuron_var];
@@ -788,16 +819,13 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &pos,
 				//QColor color(lobe->red * multiplier, lobe->green * multiplier, lobe->blue * multiplier);
 
 				// draw neuron
+				wattron(win, COLOR_PAIR(2));
 				mvwprintw(win, 4+y*2, 4+x*2, "X");
-				//painter.setPen(color);
-				//QBrush brush(color);
-				//painter.setBrush(brush);
-				//painter.drawRect(lobex + (x * 20) + 6, lobey + (y * 20) + 6, 8, 8);
-				//painter.setBrush(oldbrush);
+				wattron(win, COLOR_PAIR(1));
 			}
 		}
 	}
-}/*
+
 	// draw dendrites
 	for (std::vector<c2eTract *>::iterator i = b->tracts.begin(); i != b->tracts.end(); i++) {
 		c2eBrainTractGene *tract = (*i)->getGene();
@@ -810,21 +838,41 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &pos,
 			c2eDendrite *dend = (*i)->getDendrite(j);
 
 			float var = dend->variables[dendrite_var];
-			if (threshold == 0.0f) {
+			/*if (threshold == 0.0f) {
 				if (var == threshold) continue;
 			} else {
 				if (var <= threshold) continue;
-			}
-
-			float multiplier = 0.5 + (var / 2.2);
-			QColor color(destlobe->red * multiplier, destlobe->green * multiplier, destlobe->blue * multiplier);
-			painter.setPen(color);
+			}*/
 
 			assert(neuroncoords.find(dend->source) != neuroncoords.end());
 			assert(neuroncoords.find(dend->dest) != neuroncoords.end());
-			painter.drawLine(neuroncoords[dend->source].first, neuroncoords[dend->source].second, neuroncoords[dend->dest].first, neuroncoords[dend->dest].second);
+
+			// highlight source neurons
+			if(lobeName.compare(destlobename) == 0)
+			mvwprintw(win, 35, 3, "%d %d %d %d (%s %s) -- %d                  ",
+					neuroncoords[dend->source].first, neuroncoords[dend->source].second,
+					neuroncoords[dend->dest].first, neuroncoords[dend->dest].second,
+					lobeName.c_str(), destlobename.c_str(),
+					neuroncoords.size()
+					);
+
+			// highlight dest neurons
+			if(int(neuroncoords[dend->source].first) == posu &&
+					int(neuroncoords[dend->source].second) == posv &&
+					lobeName.compare(destlobename) == 0) {
+
+
+
+				wattron(win, COLOR_PAIR(3));
+				mvwprintw(win, 4+neuroncoords[dend->dest].second*2, 4+neuroncoords[dend->dest].first*2, "o");
+				wattron(win, COLOR_PAIR(1));
+			}
+
+
+
+			//painter.drawLine(neuroncoords[dend->source].first, neuroncoords[dend->source].second, neuroncoords[dend->dest].first, neuroncoords[dend->dest].second);
 		}
 	}
-}*/
+}
 
 /* vim: set noet: */

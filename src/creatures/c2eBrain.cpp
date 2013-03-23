@@ -479,6 +479,7 @@ inline void warnUnimplementedSVRule(unsigned char data, bool opcode = true) {
 
 	std::cout << "brain debug: something tried using unimplemented " << (opcode ? "opcode" : "operand type" ) <<
 		(unsigned int)data << ", will not warn about unimplemented svrule bits again." << std::endl;
+	assert(0);
 }
 
 // goto locations are one-based
