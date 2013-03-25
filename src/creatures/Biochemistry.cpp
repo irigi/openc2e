@@ -22,6 +22,9 @@
 #include <cmath> // powf
 #include "c2eBrain.h"
 #include "oldBrain.h"
+#include <string>       // std::string
+#include <iostream>     // std::cout
+#include <sstream>      // std::stringstream
 
 using boost::shared_ptr;
 

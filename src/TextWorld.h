@@ -16,7 +16,7 @@
 #include <istream>
 #include <boost/filesystem/path.hpp>
 #include <list>
-#include "exceptions.h"
+//#include "exceptions.h"
 #include "creatures/Creature.h"
 
 #include <boost/variant.hpp>
@@ -24,7 +24,7 @@
 #include <boost/format.hpp>
 
 #include "AgentRef.h"
-#include "alloc_count.h"
+//#include "alloc_count.h"
 #include <set>
 
 using boost::shared_ptr;

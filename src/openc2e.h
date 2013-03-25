@@ -31,16 +31,16 @@
 #include <boost/format.hpp>
 using boost::shared_ptr;
 
-#include "exceptions.h"
+//#include "exceptions.h"
 
 typedef std::vector<unsigned char> bytestring_t;
 
-class assertFailure : public creaturesException {
+/*class assertFailure : public creaturesException {
 public:
 	assertFailure(const char *x) throw() : creaturesException(x) { }
 };
 
-/*
+
 #define caos_assert(x) if (!(x)) { throw caosException(boost::str(boost::format("%s thrown from %s:%d") % #x % __FILE__ % __LINE__)); }
 #define ensure_assert(x) do {\
 	bool ensure__v = (x); \
