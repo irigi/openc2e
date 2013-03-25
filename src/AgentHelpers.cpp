@@ -31,7 +31,7 @@ std::vector<boost::shared_ptr<IrigiAgent> > getVisibleList(IrigiAgent *seeing, u
 	std::vector<boost::shared_ptr<IrigiAgent> > agents;
 
 	for (std::list<boost::shared_ptr<IrigiAgent> >::iterator i
-			= textworld.agents.begin(); i != textworld.agents.end(); i++) {
+			= textworld->agents.begin(); i != textworld->agents.end(); i++) {
 		boost::shared_ptr<IrigiAgent> a = (*i);
 		if (!a) continue;
 		

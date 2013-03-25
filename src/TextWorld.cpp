@@ -125,6 +125,7 @@ void textWorld::tests() {
     			break;
     		case KEY_F(7):
 				console->switchWin(2);
+    			cur_y = 0;
     			state = 7;
     			break;
     		case KEY_F(8):
@@ -144,7 +145,7 @@ void textWorld::tests() {
     	}
 
     	if(state == 1) {
-    		mvwprintw(console->activeWin(), cur_y, cur_x, "X");
+    		drawWorld(console->activeWin(), cur_x, -cur_y, -cur_v);
     	}
 
     	if(n % game_speed == 0 && state == 2) {
@@ -166,8 +167,7 @@ void textWorld::tests() {
     		int tmp;
     		console->resetActiveWin();
     	    norn->getCreature()->drawNornBrainWindow(console->activeWin(),
-    	    		cur_x, cur_y, cur_u, cur_v,
-    	    		1, 1, 0.01, tmp);
+    	    		cur_x, cur_y, cur_u, cur_v);
     	}
 
 
@@ -184,9 +184,74 @@ void textWorld::tests() {
 
 }
 
-textWorld::textWorld() {
+textWorld::textWorld(unsigned int sX, unsigned int sY, unsigned int sZ) {
 	console = new textWindow();
 	console->initColors();
+
+	paused = false;
+	timeofday = 0;
+	season = 0;
+	quitting = false;
+	dayofseason = 0;
+	saving = false;
+	year = 0;
+
+	sizeX = sX;
+	sizeY = sY;
+	sizeZ = sZ;
+	world = (textField****)malloc(sizeof(textField***)* sizeX);
+	for(int i = 0; i < sizeX; i++) {
+		world[i] = (textField***)malloc(sizeof(textField**)* sizeY);
+
+		for(int j = 0; j < sizeY; j++) {
+			world[i][j] = (textField**)malloc(sizeof(textField*)* sizeZ);
+
+			for(int k = 0; k < sizeZ; k++) {
+				//textField(textField * north, textField *east,
+				//		textField *west, textField *south,
+				//		textField *up, textField *down);
+
+				world[i][j][k] = new textField();
+
+				if(k < 3) {
+					world[i][j][k]->initAir();
+				} else {
+					world[i][j][k]->initRockWall();
+				}
+
+				if(k == 0)
+					world[i][j][k]->initGrass();
+
+				// small house
+				if(k == 0 && ((i == 5 && j >=5 && j <= 10) ||
+						(i == 10 && j >=5 && j <= 10)  ||
+						(j == 5 && i >=5 && i <= 10) ||
+						(j == 10 && i >=5 && i <= 10) )) {
+					world[i][j][k]->initWoodenWall();
+				}
+
+				if(k == 1 && i >= 5 && i <=10 && j <= 10 && j >=5 )
+					world[i][j][k]->initWoodenWall();
+
+				if(i == 8 && k == 0 && j == 10)
+					world[i][j][k]->initGrass();
+			}
+		}
+	}
+
+	for(int i = 0; i < sizeX; i++) {
+			for(int j = 0; j < sizeY; j++) {
+				for(int k = 0; k < sizeZ; k++) {
+					world[i][j][k]->initNeighbours(
+							world[i][(j+1+sizeY)%sizeY][k],
+							world[(i+1+sizeX)%sizeX][j][k],
+							world[(i-1+sizeX)%sizeX][j][k],
+							world[i][(j-1+sizeY)%sizeY][k],
+							world[i][j][(k+1+sizeZ)%sizeZ],
+							world[i][j][(k-1+sizeZ)%sizeZ]);
+				}
+			}
+	}
 
 	// read directories of current path as working directories
 	fs::path p(boost::filesystem::current_path());
@@ -323,7 +388,7 @@ PhysicalCreature* textWorld::newNorn() {
 	std::string genomefile = "*";
 	shared_ptr<genomeFile> genome;
 	try {
-		genome = textworld.loadGenome(genomefile);
+		genome = textworld->loadGenome(genomefile);
 	} catch (creaturesException &e) {
 		fprintf(stderr, "Couldn't load genome file: %s", e.prettyPrint().c_str() );
 		return NULL;
@@ -379,6 +444,73 @@ void textWorld::makeNewEgg() {
 	//	QMessageBox::warning(this, tr("Couldn't create egg:"), err.c_str());
 }
 
+void textWorld::drawWorld(WINDOW *win, int X, int Y, int Z) {
+	int offsetX = X + win->_maxx/2 - 1;
+	int offsetY = Y + win->_maxy/2 - 1;
+
+	for(int i = 1; i < win->_maxx-1; i++) {
+		for(int j = 1; j < win->_maxy-1; j++) {
+			int posX = (i - offsetX + 10000*sizeX)%sizeX;
+			int posY = (j - offsetY + 10000*sizeY)%sizeY;
+			int posZ = (Z + 10000*sizeZ)%sizeZ;
+
+			wattron(win, world[posX][posY][posZ]->SymbolStyle());
+			mvwprintw(win, j, i, "%c", world[posX][posY][posZ]->Symbol());
+			wattroff(win, world[posX][posY][posZ]->SymbolStyle());
+			wattron(win, COLOR_PAIR(1));
+		}
+	}
+}
+
+textField::textField() {
+	this->north = NULL;
+	this->east = NULL;
+	this->west = NULL;
+	this->south = NULL;
+	this->down = NULL;
+	this->up = NULL;
+
+	air_quality = 1;
+	passable = true;
+	symbol = '?';
+	symbol_style = COLOR_PAIR(1);
+}
+
+void textField::initNeighbours(textField * n, textField *e, textField *w, textField *s, textField *u, textField *d) {
+	this->north = n;
+	this->east = e;
+	this->west = w;
+	this->south = s;
+	this->down = d;
+	this->up = u;
+}
+
+void textField::initRiver() {
+	symbol = '~';
+	symbol_style = COLOR_PAIR(1) | A_BOLD;
+}
+
+void textField::initRockWall() {
+	symbol = 'X';
+	symbol_style = COLOR_PAIR(1);
+	passable = false;
+}
+
+void textField::initWoodenWall() {
+	symbol = 'X';
+	symbol_style = COLOR_PAIR(1) | A_BOLD;
+}
+
+void textField::initAir() {
+	symbol = ' ';
+	symbol_style = COLOR_PAIR(1);
+}
+
+void textField::initGrass() {
+	symbol = '.';
+	symbol_style = COLOR_PAIR(3) | A_BOLD;
+}
+
 const std::string textWorld::gametype = "c3";
 
-textWorld textworld;
+textWorld *textworld = new textWorld(50, 50, 5);

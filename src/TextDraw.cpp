@@ -69,6 +69,10 @@ textWindow::~textWindow() {
     delwin(F2win);
     delwin(F3win1);
     delwin(F3win2);
+
+    nodelay(stdscr, FALSE);
+    scrollok(stdscr, FALSE);
+
     endwin();
     refresh();
 }

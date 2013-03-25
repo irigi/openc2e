@@ -35,11 +35,43 @@ class textWindow;
 class genomeFile;
 class PhysicalCreature;
 
+// one text field of the world
+class textField {
+public:
+	textField();
+	void initNeighbours(textField * n, textField *e, textField *w, textField *s, textField *u, textField *d);
+	void initRiver();
+	void initRockWall();
+	void initWoodenWall();
+	void initAir();
+	void initGrass();
+
+	int SymbolStyle() { return this->symbol_style; }
+	int Symbol() { return this->symbol; }
+	bool Passable() { return this->passable; }
+	float AirQuality() { return air_quality; }
+	textField *North() { return north ; }
+	textField *East() { return east ; }
+	textField *West() { return west ; }
+	textField *South() { return south ; }
+	textField *Up() { return up ; }
+	textField *Down() { return down; }
+
+
+private:
+	std::vector<IrigiAgent> agents;
+	textField * north, *east, *west, *south, *up, *down;
+	bool passable;
+	float air_quality;
+	int symbol;
+	int symbol_style;
+};
+
 
 // the whole universe
 class textWorld {
 public:
-	textWorld();
+	textWorld(unsigned int sizeX, unsigned int sizeY, unsigned int sizeZ);
 	~textWorld();
 
 	shared_ptr<genomeFile> loadGenome(std::string &genefile);
@@ -53,6 +85,8 @@ public:
 	void makeNewEgg();
 	PhysicalCreature *newNorn();
 
+	void drawWorld(WINDOW *win, int X, int Y, int Z);
+
 	void tests();
 
 	bool quitting, saving, paused;
@@ -65,9 +99,10 @@ public:
 
 	static const std::string gametype;
 private:
-
+	textField **** world;
+	int sizeX, sizeY, sizeZ;
 };
 
-extern textWorld textworld;
+extern textWorld *textworld;
 
 #endif /* TEXTWORLD_H_ */

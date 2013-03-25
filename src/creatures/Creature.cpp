@@ -721,27 +721,65 @@ void c2eCreature::drawNornDrivesWindow(WINDOW * win, int &pos) {
 	box(win, 0, 0);
 }
 
-/*
-#include <QApplication>
-#include <QPixmap>
-#include <QPainter>
-#include <QTextDocument>
-*/
-void c2eCreature::drawNornBrainWindow(WINDOW *win, int &posx, int &posy, int &posu, int &posv,
-		unsigned int neuron_var, unsigned int dendrite_var, float threshold,
-		int lobeNumber) {
+void logdraw(float varf, int ch, int neuronx, int neurony, WINDOW * win, int colpair) {
+	// if below threshold, don't draw
+	int var;
+
+	if(varf == 0.0f)
+		var = 0;
+	else
+		var = log(varf)/log(2) + 10;
+
+	if(var > 10) {
+		wattron(win, COLOR_PAIR(colpair)); wattron(win, A_BOLD | A_BLINK);
+		mvwprintw(win, neurony, neuronx, "%c", toupper(ch));
+		wattron(win, COLOR_PAIR(1)); wattroff(win, A_BOLD| A_BLINK);
+	} else
+
+	switch(var) {
+	case 10:
+	case 9:
+		wattron(win, COLOR_PAIR(colpair)); wattron(win, A_BOLD);
+		mvwprintw(win, neurony, neuronx, "%c", toupper(ch));
+		wattron(win, COLOR_PAIR(1)); wattroff(win, A_BOLD);
+		break;
+	case 8:
+	case 7:
+	case 6:
+		wattron(win, COLOR_PAIR(colpair));
+		mvwprintw(win, neurony, neuronx, "%c", toupper(ch));
+		wattron(win, COLOR_PAIR(1));
+		break;
+	case 5:
+	case 4:
+	case 3:
+		wattron(win, COLOR_PAIR(colpair));
+		mvwprintw(win, neurony, neuronx, "%c", tolower(ch));
+		wattron(win, COLOR_PAIR(1));
+	case 2:
+	case 1:
+		mvwprintw(win, neurony, neuronx, "%c", tolower(ch));
+	case 0:
+	default:
+		break;
+	}
+}
+
+// http://www.gamewaredevelopment.com/cdn/CDN_more.php?CDN_article_id=108
+void c2eCreature::drawNornBrainWindow(WINDOW *win, int &posx, int &posy, int &posu, int &posv) {
 
 	assert(win);
 
 	if(posx >= int(getBrain()->lobes.size())) posx = getBrain()->lobes.size() - 1;
 	if(posx < 0) posx = 0;
-	lobeNumber = posx;
+	int lobeNumber = posx;
 	std::string lobeName = "";
 
 	if(posy >= 8) posy = 7;
 	if(posy < 0) posy = 0;
-	neuron_var = posy;
-	dendrite_var = posy;
+	int neuron_var = posy;
+	int dendrite_var = posy;
+	float threshold = 0.001;
 
 	std::map<c2eNeuron *, std::pair<unsigned int, unsigned int> > neuroncoords;
 	c2eBrain * b = getBrain();
@@ -782,29 +820,6 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &posx, int &posy, int &po
 
 				mvwprintw(win, neurony, neuronx, ".");
 
-				// if below threshold, don't draw
-				float var = neuron->variables[neuron_var];
-				// TODO: muh
-				if (!((threshold == 0.0f && var == threshold)
-						|| (threshold != 0.0f && var <= threshold))) {
-
-					// draw neuron
-					wattron(win, COLOR_PAIR(2));
-					mvwprintw(win, neurony, neuronx, "X");
-					wattron(win, COLOR_PAIR(1));
-				}
-
-				if(lobeno != lobeNumber)
-					continue;
-
-				// drawing part
-
-				if(posu >= int(lobe->width)) posu = lobe->width - 1;
-				if(posu < 0) posu = 0;
-
-				if(posv >= int(lobe->height)) posv = lobe->height - 1;
-				if(posv < 0) posv = 0;
-
 				// always highlight spare neuron
 				if (i->second->getSpareNeuron() == neuronid) {
 					// TODO: don't hardcode these names?
@@ -816,6 +831,18 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &posx, int &posy, int &po
 
 				mvwprintw(win, neurony, neuronx, ".");
 				wattron(win, COLOR_PAIR(1));
+
+				logdraw(neuron->variables[neuron_var], 'x', neuronx, neurony, win, 2);
+
+				if(lobeno != lobeNumber)
+					continue;
+
+
+				if(posu >= int(lobe->width)) posu = lobe->width - 1;
+				if(posu < 0) posu = 0;
+
+				if(posv >= int(lobe->height)) posv = lobe->height - 1;
+				if(posv < 0) posv = 0;
 
 				// highlight the selected neuron
 				if(posu == x && posv == y) {
@@ -869,10 +896,6 @@ void c2eCreature::drawNornBrainWindow(WINDOW *win, int &posx, int &posy, int &po
 				mvwprintw(win, neuroncoords[dend->dest].second, neuroncoords[dend->dest].first, "o");
 				wattron(win, COLOR_PAIR(1));
 			}
-
-
-
-			//painter.drawLine(neuroncoords[dend->source].first, neuroncoords[dend->source].second, neuroncoords[dend->dest].first, neuroncoords[dend->dest].second);
 		}
 	}
 }
